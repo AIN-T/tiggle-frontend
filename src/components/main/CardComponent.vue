@@ -27,7 +27,7 @@
 
 <script setup>
 import { defineProps } from 'vue';
-import { formatDate } from '../../utils/format';
+import { formatDate } from '../../utils/formatDate';
 
 const props = defineProps(['program']);
 </script>
