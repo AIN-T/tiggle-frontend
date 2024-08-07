@@ -1,5 +1,5 @@
 <template>
-  <Form @submit="check" :validation-schema="schema" v-slot="{ values }">
+  <Form @submit="signup" :validation-schema="schema" v-slot="{ values }">
     <div class="memberContainer">
       <div class="header">
         <div class="headerInner">
@@ -23,33 +23,13 @@
                       name="email"
                       class="inputText"
                       placeholder="이메일을 입력해주세요"
+                      v-model="member.email"
                     />
                   </div>
                 </div>
               </div>
-              <div class="col selectCol">
-                <div class="uSelectBox">
-                  <label>
-                    <select tabindex="6">
-                      <option value="direct">직접입력</option>
-                      <option value="naver.com">@naver.com</option>
-                      <option value="hanmail.net">@hanmail.net</option>
-                      <option value="gmail.com">@gmail.com</option>
-                      <option value="nate.com">@nate.com</option>
-                      <option value="hotmail.com">@hotmail.com</option>
-                    </select>
-                  </label>
-                </div>
-              </div>
             </div>
             <ErrorMessage class="ErrorMessage" name="email" />
-            <div class="accountValiBlock" style="display: none">
-              <div class="accountGuide"></div>
-              <p class="blockText">
-                동일 정보로 가입된 계정으로 로그인 하시겠습니까?
-              </p>
-              <a href="#" class="btn btnArrow">로그인하기</a>
-            </div>
           </div>
           <div class="uBlock">
             <div class="uInputArea">
@@ -63,18 +43,15 @@
                       name="password"
                       class="inputText"
                       placeholder="8~12자 영문, 숫자, 특수문자"
+                      v-model="member.password"
                     />
                     <button
                       type="button"
                       class="btnDel"
                       aria-label="삭제"
+                      @click="member.password = ''"
                     ></button>
                   </div>
-                </div>
-              </div>
-              <div class="col">
-                <div class="uBtnArea">
-                  <button type="button" class="uBtn">보기</button>
                 </div>
               </div>
             </div>
@@ -92,6 +69,7 @@
                       name="confirm_password"
                       class="inputText"
                       placeholder="8~12자 영문, 숫자, 특수문자"
+                      v-model="member.confirm_password"
                     />
                     <button
                       type="button"
@@ -99,11 +77,6 @@
                       aria-label="삭제"
                     ></button>
                   </div>
-                </div>
-              </div>
-              <div class="col">
-                <div class="uBtnArea">
-                  <button type="button" class="uBtn">보기</button>
                 </div>
               </div>
             </div>
@@ -121,11 +94,13 @@
                       name="name"
                       class="inputText"
                       placeholder="이름을 입력해주세요"
+                      v-model="member.name"
                     />
                     <button
                       type="button"
                       class="btnDel"
                       aria-label="삭제"
+                      @click="member.name = ''"
                     ></button>
                   </div>
                 </div>
@@ -142,15 +117,16 @@
                     <Field
                       type="text"
                       id="inputAddress"
-                      name="address"
+                      name="region_1depth_name"
                       class="inputText"
                       placeholder="주소를 입력해주세요"
+                      v-model="member.region_1depth_name"
                     />
                   </div>
                 </div>
               </div>
             </div>
-            <ErrorMessage class="ErrorMessage" name="address" />
+            <ErrorMessage class="ErrorMessage" name="region_1depth_name" />
           </div>
           <div class="uBlock">
             <div class="uInputArea">
@@ -164,36 +140,27 @@
                       name="cellphone"
                       class="inputText"
                       placeholder="010-1234-5678"
+                      v-model="member.cellphone"
                     />
                     <button
                       type="button"
                       class="btnDel"
                       aria-label="삭제"
+                      @click="member.cellphone = ''"
                     ></button>
                   </div>
                 </div>
               </div>
             </div>
             <ErrorMessage class="ErrorMessage" name="cellphone" />
-            <div class="uErrorText" style="display: none">
-              점유인증을 하여 휴대폰 번호를 등록해주세요. 등록한 번호는 로그인
-              이후 변경 가능합니다.
-            </div>
-            <div class="accountValiBlock" style="display: none">
-              <div class="accountGuide"></div>
-              <p class="blockText">
-                동일 정보로 가입된 계정으로 로그인 하시겠습니까?
-              </p>
-              <a href="#" class="btn btnArrow">로그인하기</a>
-            </div>
           </div>
           <div class="uBlock checkBlock">
             <div class="uCheckbox">
               <label>
                 <input type="checkbox" v-model="isSmsEmailOptIn" />
-                <span class="text"
-                  >SMS, 이메일로 상품 및 이벤트 정보를 받겠습니다.(선택)</span
-                >
+                <span class="text">
+                  SMS, 이메일로 상품 및 이벤트 정보를 받겠습니다.(선택)
+                </span>
               </label>
             </div>
             <div class="uCheckbox">
@@ -206,7 +173,6 @@
               14세 미만 가입시 법정대리인 동의 필수입니다.
             </div>
           </div>
-
           <div class="ubtnArea">
             <div class="col">
               <button
@@ -216,9 +182,8 @@
                   !isOver14 ||
                   !values.email ||
                   !values.password ||
-                  !values.confirm_password ||
                   !values.name ||
-                  !values.address ||
+                  !values.region_1depth_name ||
                   !values.cellphone
                 "
               >
@@ -241,6 +206,12 @@
 import { ref } from 'vue';
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import * as yup from 'yup';
+import { useMemberStore } from '@/stores/useMemberStore';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const memberStore = useMemberStore();
 
 const schema = yup.object().shape({
   email: yup
@@ -256,15 +227,26 @@ const schema = yup.object().shape({
     .oneOf([yup.ref('password'), null], '비밀번호가 일치하지 않습니다.')
     .required('비밀번호 확인은 필수입니다.'),
   name: yup.string().required('이름은 필수입니다.'),
-  address: yup.string().required('주소는 필수입니다.'),
+  region_1depth_name: yup.string().required('주소는 필수입니다.'),
   cellphone: yup.string().required('휴대폰 번호는 필수입니다.'),
 });
 
-const isOver14 = ref(false); // 14세 이상 체크박스 상태
-const isSmsEmailOptIn = ref(false); // SMS/이메일 체크박스 상태
+const isOver14 = ref(false);
+const isSmsEmailOptIn = ref(false);
 
-const check = (values) => {
-  console.log(values);
+const member = ref({
+  email: '',
+  password: '',
+  name: '',
+  region_1depth_name: '',
+  cellphone: '',
+});
+
+const signup = async () => {
+  const res = await memberStore.signup(member.value);
+  if (res) {
+    router.push('/login');
+  }
 };
 </script>
 
