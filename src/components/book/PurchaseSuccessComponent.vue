@@ -85,7 +85,7 @@
 </template>
 
 <script>
-import TicketInfoComponent from './TicketInfoComponent.vue';
+import TicketInfoComponent from '../book/TicketInfoComponent.vue';
 
 export default {
   name: 'PurchaseSuccessComponent',

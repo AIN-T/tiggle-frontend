@@ -53,7 +53,7 @@
                 id="ez_canvas_zone"
                 style="width: 682px; height: 602px; display: none"
               ></div>
-              <SeatComponent />
+              <SeatComponent @seatInfo="getData" />
             </div>
           </div>
         </div>
@@ -152,7 +152,9 @@
         <div class="box_seat">
           <div class="select_seat_info">
             <div class="select_seat_title">선택 좌석</div>
-            <div class="select_seat_price">1층 1구역 2열 11번</div>
+            <div class="select_seat_price" v-if="selectedSeat != null">
+              1구역 {{ selectedSeat.row }}열 {{ selectedSeat.seatNumber }}번
+            </div>
           </div>
         </div>
       </div>
@@ -172,32 +174,51 @@
   </div>
 </template>
 
-<script>
-import SeatComponent from './SeatComponent.vue';
-export default {
-  name: 'SelectSeatComponent',
-  components: {
-    SeatComponent,
-  },
-  data() {
-    return {
-      seatList: [
-        { floor: 1, section: 'A', seat: 0 },
-        { floor: 1, section: 'B', seat: 0 },
-        { floor: 1, section: 'C', seat: 0 },
-        { floor: 1, section: 'D', seat: 1 },
-        { floor: 1, section: 'E', seat: 0 },
-        { floor: 1, section: 'F', seat: 0 },
-        { floor: 2, section: 'A', seat: 2 },
-        { floor: 2, section: 'B', seat: 0 },
-        { floor: 2, section: 'C', seat: 0 },
-        { floor: 2, section: 'D', seat: 3 },
-        { floor: 2, section: 'E', seat: 1 },
-        { floor: 2, section: 'F', seat: 0 },
-      ],
-    };
-  },
+<script setup>
+import { ref } from 'vue';
+import SeatComponent from '../book/SeatComponent.vue';
+import { useBookingStore } from '@/stores/useBookingStore';
+import { watch } from 'vue';
+
+const selectedSeat = ref(null);
+
+// 좌석 리스트 상태 정의
+const seatList = ref([
+  { floor: 1, section: 'A', seat: 0 },
+  { floor: 1, section: 'B', seat: 0 },
+  { floor: 1, section: 'C', seat: 0 },
+  { floor: 1, section: 'D', seat: 1 },
+  { floor: 1, section: 'E', seat: 0 },
+  { floor: 1, section: 'F', seat: 0 },
+  { floor: 2, section: 'A', seat: 2 },
+  { floor: 2, section: 'B', seat: 0 },
+  { floor: 2, section: 'C', seat: 0 },
+  { floor: 2, section: 'D', seat: 3 },
+  { floor: 2, section: 'E', seat: 1 },
+  { floor: 2, section: 'F', seat: 0 },
+]);
+
+const getData = (seatInfo) => {
+  selectedSeat.value = seatInfo;
 };
+
+const store = useBookingStore();
+
+watch(
+  () => [store.book.programId, store.book.timesId, store.book.sectionId],
+  (
+    [newProgramId, newTimesId, newSectionId],
+    [oldProgramId, oldTimesId, oldSectionId]
+  ) => {
+    if (
+      newProgramId !== oldProgramId ||
+      newTimesId !== oldTimesId ||
+      newSectionId !== oldSectionId
+    ) {
+      store.getSeatLists(newProgramId, newTimesId, newSectionId);
+    }
+  }
+);
 </script>
 
 <style scoped>
@@ -436,7 +457,7 @@ export default {
     repeat;
 }
 .wrap_seat .box_stage .txt_stage {
-  margin-top: 5px;
+  margin: 15px;
   font-size: 14px;
 }
 .seat_box .seat_btn {
