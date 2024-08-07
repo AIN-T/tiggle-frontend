@@ -1,324 +1,230 @@
 <template>
-  <div class="memberContainer">
-    <div class="header">
-      <div class="headerInner">
-        <a class="headerLogo">
-          <span class="blind">INTERPARK</span>
-        </a>
-        <div class="headerTitle">정보입력</div>
+  <Form @submit="check" :validation-schema="schema" v-slot="{ values }">
+    <div class="memberContainer">
+      <div class="header">
+        <div class="headerInner">
+          <a class="headerLogo">
+            <span class="blind">INTERPARK</span>
+          </a>
+          <div class="headerTitle">정보입력</div>
+        </div>
       </div>
-    </div>
-    <div class="contents">
-      <div class="contentWrapper registContent">
-        <div class="uBlock">
-          <div class="uInputArea emailType">
-            <div class="col">
-              <div class="uInput">
-                <label for="inputEmail">이메일</label>
-                <div class="inputBox">
-                  <input
-                    type="text"
-                    id="inputEmail"
-                    class="inputText"
-                    tabindex="5"
-                    value=""
-                  />
+      <div class="contents">
+        <div class="contentWrapper registContent">
+          <div class="uBlock">
+            <div class="uInputArea emailType">
+              <div class="col">
+                <div class="uInput">
+                  <label for="inputEmail">이메일</label>
+                  <div class="inputBox">
+                    <Field
+                      type="text"
+                      id="inputEmail"
+                      name="email"
+                      class="inputText"
+                      placeholder="이메일을 입력해주세요"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="col selectCol">
+                <div class="uSelectBox">
+                  <label>
+                    <select tabindex="6">
+                      <option value="direct">직접입력</option>
+                      <option value="naver.com">@naver.com</option>
+                      <option value="hanmail.net">@hanmail.net</option>
+                      <option value="gmail.com">@gmail.com</option>
+                      <option value="nate.com">@nate.com</option>
+                      <option value="hotmail.com">@hotmail.com</option>
+                    </select>
+                  </label>
                 </div>
               </div>
             </div>
-            <div class="col selectCol">
-              <div class="uSelectBox">
-                <label>
-                  <select tabindex="6">
-                    <option value="direct">직접입력</option>
-                    <option value="naver.com">@naver.com</option>
-                    <option value="hanmail.net">@hanmail.net</option>
-                    <option value="gmail.com">@gmail.com</option>
-                    <option value="nate.com">@nate.com</option>
-                    <option value="hotmail.com">@hotmail.com</option>
-                  </select>
-                </label>
-              </div>
+            <ErrorMessage class="ErrorMessage" name="email" />
+            <div class="accountValiBlock" style="display: none">
+              <div class="accountGuide"></div>
+              <p class="blockText">
+                동일 정보로 가입된 계정으로 로그인 하시겠습니까?
+              </p>
+              <a href="#" class="btn btnArrow">로그인하기</a>
             </div>
           </div>
-          <div class="uErrorText" style="display: block"></div>
-          <div class="accountValiBlock" style="display: none">
-            <div class="accountGuide"></div>
-            <p class="blockText">
-              동일 정보로 가입된 계정으로 로그인 하시겠습니까?
-            </p>
-            <a href="#" class="btn btnArrow">로그인하기</a>
-          </div>
-        </div>
-        <div class="uBlock">
-          <div class="uInputArea">
-            <div class="col">
-              <div class="uInput">
-                <label for="inputPw">비밀번호</label>
-                <div class="inputBox">
-                  <input
-                    type="password"
-                    id="inputPw"
-                    class="inputText"
-                    placeholder="8~12자 영문, 숫자, 특수문자"
-                    tabindex="2"
-                    value=""
-                  />
-                  <button
-                    type="button"
-                    class="btnDel"
-                    aria-label="삭제"
-                  ></button>
+          <div class="uBlock">
+            <div class="uInputArea">
+              <div class="col">
+                <div class="uInput">
+                  <label for="inputPw">비밀번호</label>
+                  <div class="inputBox">
+                    <Field
+                      type="password"
+                      id="inputPw"
+                      name="password"
+                      class="inputText"
+                      placeholder="8~12자 영문, 숫자, 특수문자"
+                    />
+                    <button
+                      type="button"
+                      class="btnDel"
+                      aria-label="삭제"
+                    ></button>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="uBtnArea">
+                  <button type="button" class="uBtn">보기</button>
                 </div>
               </div>
             </div>
-            <div class="col">
-              <div class="uBtnArea">
-                <button type="button" class="uBtn">보기</button>
-              </div>
-            </div>
+            <ErrorMessage class="ErrorMessage" name="password" />
           </div>
-          <div class="uErrorText" style="display: block"></div>
-        </div>
-        <div class="uBlock">
-          <div class="uInputArea">
-            <div class="col">
-              <div class="uInput">
-                <label for="inputPwConfirm">비밀번호 확인</label>
-                <div class="inputBox">
-                  <input
-                    type="password"
-                    id="inputPwConfirm"
-                    class="inputText"
-                    placeholder="8~12자 영문, 숫자, 특수문자"
-                    tabindex="3"
-                    value=""
-                  />
-                  <button
-                    type="button"
-                    class="btnDel"
-                    aria-label="삭제"
-                  ></button>
+          <div class="uBlock">
+            <div class="uInputArea">
+              <div class="col">
+                <div class="uInput">
+                  <label for="inputPwConfirm">비밀번호 확인</label>
+                  <div class="inputBox">
+                    <Field
+                      type="password"
+                      id="inputPwConfirm"
+                      name="confirm_password"
+                      class="inputText"
+                      placeholder="8~12자 영문, 숫자, 특수문자"
+                    />
+                    <button
+                      type="button"
+                      class="btnDel"
+                      aria-label="삭제"
+                    ></button>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="uBtnArea">
+                  <button type="button" class="uBtn">보기</button>
                 </div>
               </div>
             </div>
-            <div class="col">
-              <div class="uBtnArea">
-                <button type="button" class="uBtn">보기</button>
-              </div>
-            </div>
+            <ErrorMessage class="ErrorMessage" name="confirm_password" />
           </div>
-          <div class="uErrorText" style="display: block"></div>
-        </div>
-        <div class="uBlock">
-          <div class="uInputArea">
-            <div class="col">
-              <div class="uInput">
-                <label for="inputName">이름</label>
-                <div class="inputBox">
-                  <input
-                    type="text"
-                    id="inputName"
-                    class="inputText"
-                    tabindex="4"
-                    value=""
-                  />
-                  <button
-                    type="button"
-                    class="btnDel"
-                    aria-label="삭제"
-                  ></button>
+          <div class="uBlock">
+            <div class="uInputArea">
+              <div class="col">
+                <div class="uInput">
+                  <label for="inputName">이름</label>
+                  <div class="inputBox">
+                    <Field
+                      type="text"
+                      id="inputName"
+                      name="name"
+                      class="inputText"
+                      placeholder="이름을 입력해주세요"
+                    />
+                    <button
+                      type="button"
+                      class="btnDel"
+                      aria-label="삭제"
+                    ></button>
+                  </div>
                 </div>
               </div>
             </div>
+            <ErrorMessage class="ErrorMessage" name="name" />
           </div>
-          <div class="uErrorText" style="display: block"></div>
-        </div>
-        <div class="uBlock">
-          <div class="uInputArea">
-            <div class="col">
-              <div class="uInput">
-                <label for="inputName">주소</label>
-                <div class="inputBox">
-                  <input
-                    type="text"
-                    id="inputEmail"
-                    class="inputText"
-                    tabindex="5"
-                    value=""
-                  />
+          <div class="uBlock">
+            <div class="uInputArea">
+              <div class="col">
+                <div class="uInput">
+                  <label for="inputAddress">주소</label>
+                  <div class="inputBox">
+                    <Field
+                      type="text"
+                      id="inputAddress"
+                      name="address"
+                      class="inputText"
+                      placeholder="주소를 입력해주세요"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
+            <ErrorMessage class="ErrorMessage" name="address" />
           </div>
-        </div>
-        <div class="uBlock">
-          <div class="uInputArea">
-            <div class="col">
-              <div class="uInput">
-                <label for="inputCellphone">휴대폰</label>
-                <div class="inputBox">
-                  <input
-                    type="text"
-                    id="inputCellphone"
-                    class="inputText"
-                    placeholder="010 1234 5678"
-                    tabindex="7"
-                    value=""
-                  />
-                  <button
-                    type="button"
-                    class="btnDel"
-                    aria-label="삭제"
-                  ></button>
+          <div class="uBlock">
+            <div class="uInputArea">
+              <div class="col">
+                <div class="uInput">
+                  <label for="inputCellphone">휴대폰</label>
+                  <div class="inputBox">
+                    <Field
+                      type="text"
+                      id="inputCellphone"
+                      name="cellphone"
+                      class="inputText"
+                      placeholder="010-1234-5678"
+                    />
+                    <button
+                      type="button"
+                      class="btnDel"
+                      aria-label="삭제"
+                    ></button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="uErrorText" style="display: none">
-            점유인증을 하여 휴대폰 번호를 등록해주세요. 등록한 번호는 로그인
-            이후 변경 가능합니다.
-          </div>
-          <div class="accountValiBlock" style="display: none">
-            <div class="accountGuide"></div>
-            <p class="blockText">
-              동일 정보로 가입된 계정으로 로그인 하시겠습니까?
-            </p>
-            <a href="#" class="btn btnArrow">로그인하기</a>
-          </div>
-        </div>
-        <div class="uBlock" style="display: none">
-          <div class="uInputArea">
-            <div class="col">
-              <div class="uInput">
-                <label for="inputCertifyNum">인증번호</label>
-                <div class="inputBox">
-                  <input
-                    type="text"
-                    id="inputCertifyNum"
-                    class="inputText"
-                    tabindex="8"
-                    value=""
-                  />
-                  <button
-                    type="button"
-                    class="btnDel"
-                    aria-label="삭제"
-                  ></button>
-                </div>
-              </div>
+            <ErrorMessage class="ErrorMessage" name="cellphone" />
+            <div class="uErrorText" style="display: none">
+              점유인증을 하여 휴대폰 번호를 등록해주세요. 등록한 번호는 로그인
+              이후 변경 가능합니다.
             </div>
-            <div class="col">
-              <div class="uBtnArea">
-                <button type="button" class="uBtn borderType">재발송</button>
-                <button type="button" class="uBtn borderType">확인</button>
-              </div>
+            <div class="accountValiBlock" style="display: none">
+              <div class="accountGuide"></div>
+              <p class="blockText">
+                동일 정보로 가입된 계정으로 로그인 하시겠습니까?
+              </p>
+              <a href="#" class="btn btnArrow">로그인하기</a>
             </div>
           </div>
-          <div class="certifyTime" style="display: none">
-            인증유효시간
-            <span classq="time">00:00</span>
+          <div class="uBlock checkBlock">
+            <div class="uCheckbox">
+              <label>
+                <input type="checkbox" v-model="isSmsEmailOptIn" />
+                <span class="text"
+                  >SMS, 이메일로 상품 및 이벤트 정보를 받겠습니다.(선택)</span
+                >
+              </label>
+            </div>
+            <div class="uCheckbox">
+              <label>
+                <input type="checkbox" v-model="isOver14" />
+                <span class="text">14세 이상입니다.</span>
+              </label>
+            </div>
+            <div class="uErrorText" v-if="!isOver14">
+              14세 미만 가입시 법정대리인 동의 필수입니다.
+            </div>
           </div>
-        </div>
-        <div class="uBlock checkBlock">
-          <div class="uCheckbox">
-            <label>
-              <input type="checkbox" />
-              <span class="text"
-                >SMS, 이메일로 상품 및 이벤트 정보를 받겠습니다.(선택)</span
+
+          <div class="ubtnArea">
+            <div class="col">
+              <button
+                type="submit"
+                class="uBtn point"
+                :disabled="
+                  !isOver14 ||
+                  !values.email ||
+                  !values.password ||
+                  !values.confirm_password ||
+                  !values.name ||
+                  !values.address ||
+                  !values.cellphone
+                "
               >
-            </label>
-          </div>
-          <div class="uCheckbox">
-            <label>
-              <input type="checkbox" />
-              <span class="text">14세 미만입니다.</span>
-            </label>
-          </div>
-          <div class="uErrorText" style="display: none">
-            14세 미만 가입시 법정대리인 동의 필수 입니다.
-          </div>
-        </div>
-        <div class="uBlock">
-          <p class="blockText">
-            만 14세 미만 회원은 법정대리인(부모님) 동의를 받은 경우만 회원가입이
-            가능합니다.
-          </p>
-        </div>
-        <div class="uBlock" style="display: none">
-          <div class="uInputArea">
-            <div class="col">
-              <div class="uInput">
-                <label for="inputAgreeName">이름</label>
-                <div class="inputBox">
-                  <input
-                    type="text"
-                    id="inputAgreeName"
-                    class="inputText"
-                    value=""
-                  />
-                  <button
-                    type="button"
-                    class="btnDel"
-                    aria-label="삭제"
-                  ></button>
-                </div>
-              </div>
+                가입완료
+              </button>
             </div>
-          </div>
-          <div class="uErrorText" style="display: block"></div>
-        </div>
-        <div class="uBlock" style="display: none">
-          <div class="uInputArea emailType">
-            <div class="col">
-              <div class="uInput">
-                <label for="inputAgreeEmail">이메일</label>
-                <div class="inputBox">
-                  <input
-                    type="text"
-                    id="inputAgreeEmail"
-                    class="inputText"
-                    value=""
-                  />
-                </div>
-              </div>
-            </div>
-            <div class="col selectCol">
-              <div class="uSelectBox">
-                <label>
-                  <select>
-                    <option value="direct">직접입력</option>
-                    <option value="naver.com">@naver.com</option>
-                    <option value="hanmail.net">@hanmail.net</option>
-                    <option value="gmail.com">@gmail.com</option>
-                    <option value="nate.com">@nate.com</option>
-                    <option value="hotmail.com">@hotmail.com</option>
-                  </select>
-                </label>
-              </div>
-            </div>
-          </div>
-          <div class="uErrorText" style="display: block"></div>
-        </div>
-        <div class="uBlock agreeBlock" style="display: none">
-          <div class="uInputArea">
-            <div class="col">
-              <span class="label">가입동의받기</span>
-            </div>
-            <div class="col">
-              <div class="uBtnArea">
-                <button type="button" class="uBtn borderType sType">
-                  법정대리인 본인 인증
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="ubtnArea">
-          <div class="col">
-            <button type="button" class="uBtn point" disabled="">
-              가입완료
-            </button>
           </div>
         </div>
       </div>
@@ -328,16 +234,40 @@
         </div>
       </div>
     </div>
-  </div>
+  </Form>
 </template>
 
-<script>
-export default {
-  name: 'SignupComponent',
+<script setup>
+import { ref } from 'vue';
+import { Form, Field, ErrorMessage } from 'vee-validate';
+import * as yup from 'yup';
+
+const schema = yup.object().shape({
+  email: yup
+    .string()
+    .email('이메일 양식대로 작성 해주세요.')
+    .required('이메일은 필수입니다.'),
+  password: yup
+    .string()
+    .min(8, '비밀번호는 최소 8자를 입력해주세요.')
+    .required('비밀번호는 필수입니다.'),
+  confirm_password: yup
+    .string()
+    .oneOf([yup.ref('password'), null], '비밀번호가 일치하지 않습니다.')
+    .required('비밀번호 확인은 필수입니다.'),
+  name: yup.string().required('이름은 필수입니다.'),
+  address: yup.string().required('주소는 필수입니다.'),
+  cellphone: yup.string().required('휴대폰 번호는 필수입니다.'),
+});
+
+const isOver14 = ref(false); // 14세 이상 체크박스 상태
+const isSmsEmailOptIn = ref(false); // SMS/이메일 체크박스 상태
+
+const check = (values) => {
+  console.log(values);
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 .uBtn {
   display: block;
@@ -555,6 +485,14 @@ export default {
   border-radius: 6px;
   border: 1px solid #ccc;
   color: #000;
+}
+
+.ErrorMessage {
+  font-size: 13px;
+  line-height: 20px;
+  color: #dc941b;
+  margin-top: 5px;
+  padding: 0 5px;
 }
 
 .uErrorText {
