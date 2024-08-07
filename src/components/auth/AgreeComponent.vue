@@ -10,53 +10,31 @@
       <div class="contents">
         <div class="contentWrapper termsContent">
           <div class="uCheckbox allAgree">
-            <label
-              ><input type="checkbox" />
+            <label>
+              <input type="checkbox" v-model="allAgree" @change="toggleAll" />
               <span class="text"> 약관 전체 동의 </span>
             </label>
           </div>
           <div class="termsBlock">
             <div class="label">필수 동의 항목</div>
             <div class="termsItem">
-              <div class="uCheckbox sType">
+              <div
+                class="uCheckbox sType"
+                v-for="(item, index) in requiredItems"
+                :key="index"
+              >
                 <label>
                   <div class="inputWrap">
                     <input
                       type="checkbox"
                       class="singleSelector requireSelector"
+                      v-model="item.checked"
+                      @change="checkRequired"
                     /><span class="text"></span>
                   </div>
                 </label>
                 <div class="checkboxCont">
-                  <a href="#" class="btn btnLink">[필수] 이용약관</a>
-                </div>
-              </div>
-              <div class="uCheckbox sType">
-                <label>
-                  <div class="inputWrap">
-                    <input
-                      type="checkbox"
-                      class="singleSelector requireSelector"
-                    /><span class="text"></span>
-                  </div>
-                </label>
-                <div class="checkboxCont">
-                  <a href="#" class="btn btnLink"
-                    >[필수] 전자금융거래 이용약관</a
-                  >
-                </div>
-              </div>
-              <div class="uCheckbox sType">
-                <label>
-                  <div class="inputWrap">
-                    <input
-                      type="checkbox"
-                      class="singleSelector requireSelector"
-                    /><span class="text"></span>
-                  </div>
-                </label>
-                <div class="checkboxCont">
-                  <a href="#" class="btn btnLink">[필수] 개인정보 수집동의서</a>
+                  <a href="#" class="btn btnLink">{{ item.label }}</a>
                 </div>
               </div>
             </div>
@@ -64,30 +42,22 @@
           <div class="termsBlock">
             <div class="label">선택 동의 항목</div>
             <div class="termsItem">
-              <div class="uCheckbox sType">
+              <div
+                class="uCheckbox sType"
+                v-for="(item, index) in optionalItems"
+                :key="index"
+              >
                 <label>
                   <div class="inputWrap">
-                    <input type="checkbox" class="singleSelector" /><span
-                      class="text"
-                    ></span>
+                    <input
+                      type="checkbox"
+                      class="singleSelector"
+                      v-model="item.checked"
+                    /><span class="text"></span>
                   </div>
                 </label>
                 <div class="checkboxCont">
-                  <a href="#" class="btn btnLink">[선택] 개인정보 수집동의서</a>
-                </div>
-              </div>
-              <div class="uCheckbox sType">
-                <label>
-                  <div class="inputWrap">
-                    <input type="checkbox" class="singleSelector" /><span
-                      class="text"
-                    ></span>
-                  </div>
-                </label>
-                <div class="checkboxCont">
-                  <a href="#" class="btn btnLink"
-                    >[선택] 위치기반서비스 이용약관</a
-                  >
+                  <a href="#" class="btn btnLink">{{ item.label }}</a>
                 </div>
               </div>
             </div>
@@ -98,8 +68,8 @@
                 type="button"
                 class="uBtn active"
                 data-id="nextStep"
-                disabled=""
-                @click="() => goTo('signup')"
+                :disabled="!isNextStepEnabled"
+                @click="goTo('signup')"
               >
                 다음단계
               </button>
@@ -116,13 +86,45 @@
   </div>
 </template>
 
-<script setup>
-import { useRouter } from 'vue-router';
-
-const router = useRouter();
-
-const goTo = (dest) => {
-  router.push({ path: `/${dest}` });
+<script>
+export default {
+  name: 'AgreeComponent',
+  data() {
+    return {
+      allAgree: false,
+      requiredItems: [
+        { label: '[필수] 이용약관', checked: false },
+        { label: '[필수] 전자금융거래 이용약관', checked: false },
+        { label: '[필수] 개인정보 수집동의서', checked: false },
+      ],
+      optionalItems: [
+        { label: '[선택] 개인정보 수집동의서', checked: false },
+        { label: '[선택] 위치기반서비스 이용약관', checked: false },
+      ],
+    };
+  },
+  computed: {
+    isNextStepEnabled() {
+      return this.requiredItems.every((item) => item.checked);
+    },
+  },
+  methods: {
+    goTo(dest) {
+      if (this.isNextStepEnabled) {
+        this.$router.push({ path: `/${dest}` });
+      }
+    },
+    toggleAll() {
+      const isChecked = this.allAgree;
+      this.requiredItems.forEach((item) => (item.checked = isChecked));
+      this.optionalItems.forEach((item) => (item.checked = isChecked));
+    },
+    checkRequired() {
+      this.allAgree =
+        this.requiredItems.every((item) => item.checked) &&
+        this.optionalItems.every((item) => item.checked);
+    },
+  },
 };
 </script>
 
