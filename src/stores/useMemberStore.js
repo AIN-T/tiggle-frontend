@@ -60,5 +60,35 @@ export const useMemberStore = defineStore('member', {
         return false;
       }
     },
+    async signup(member) {
+      try {
+        let res = await axios.post('/api/user/signup', member);
+        if (res.status == 200) {
+          console.log('회원가입 성공');
+          return true;
+        } else {
+          console.error('회원가입 실패', res.status, res.data);
+          return false;
+        }
+      } catch (error) {
+        if (error.response) {
+          console.error(
+            '회원가입 실패',
+            error.response.status,
+            error.response.data
+          );
+        } else if (error.request) {
+          // 요청이 서버로 보내졌으나 응답이 없음
+          console.error(
+            '회원가입 실패: 요청이 서버로 전달되지 않았음',
+            error.request
+          );
+        } else {
+          // 다른 오류
+          console.error('회원가입 실패', error.message);
+        }
+        return false;
+      }
+    },
   },
 });
