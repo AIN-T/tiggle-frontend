@@ -10,8 +10,6 @@ export const useExchangeStore = defineStore('exchange', {
         withCredentials: true,
       });
 
-      console.log('res: ', res);
-
       if (res.status === 200) {
         this.exchange = res.data.result;
       }
