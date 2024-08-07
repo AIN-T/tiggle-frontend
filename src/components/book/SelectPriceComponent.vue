@@ -443,15 +443,8 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import TicketInfoComponent from './TicketInfoComponent.vue';
-
-export default {
-  name: 'SelectPriceComponent',
-  components: {
-    TicketInfoComponent,
-  },
-};
 </script>
 
 <style scoped>
