@@ -136,25 +136,7 @@
             </div>
             <!-- //최근 참여 이벤트 -->
             <!-- 최근 1:1 문의 -->
-            <div class="box_answer">
-              <h2 class="tit_sub_float">포인트</h2>
-              <div class="list_evnt">
-                <ul id="qnaBox">
-                  <li class="lst">
-                    <p class="event_title">
-                      <a
-                        href="/customerservice/qnaInform.htm?pgidx=1&amp;ticket_id=164270967"
-                        >특정 공연에 대한 내년쯤 진행될 공연의 정보를 알 수 있는
-                        방법은 없을까요</a
-                      ><span class="btn_flexible btn_flexible_ico1"
-                        ><span>미처리</span></span
-                      >
-                    </p>
-                    <p class="event_day">2024.08.02</p>
-                  </li>
-                </ul>
-              </div>
-            </div>
+            <MyPointComponent></MyPointComponent>
           </div>
         </div>
       </div>
@@ -163,20 +145,25 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
-import { useExchangeListStore } from '@/stores/useExchangeListStore.js';
-import { useProgramsStore } from '@/stores/useProgramsStore';
-import { useRouter } from 'vue-router';
-import MyReservationComponent from './MyReservationComponent.vue';
+import { onMounted } from "vue";
+import { useExchangeListStore } from "@/stores/useExchangeListStore.js";
+import { useProgramsStore } from "@/stores/useProgramsStore";
+import { useRouter } from "vue-router";
+import MyReservationComponent from "./MyReservationComponent.vue";
+import MyPointComponent from "./MyPointComponent.vue";
+import { usePointStore } from "@/stores/usePointStore";
 
 const exchangeListStore = useExchangeListStore();
 const programStore = useProgramsStore();
+const pointStore = usePointStore();
 const router = useRouter();
 
 // 컴포넌트가 마운트될 때 데이터 가져오기
 onMounted(async () => {
+  pointStore.reqType.getOrUse = 2; // reqType을 2로 설정
   await exchangeListStore.getData(0);
   await programStore.getMyReservations();
+  await pointStore.getPointData(); // reqType을 매개변수로 전달할 필요 없음
 });
 
 // 숫자 포맷팅 함수
@@ -240,7 +227,7 @@ const goToDetail = (idx) => {
     no-repeat left 6px;
   font-size: 16px;
   color: #333;
-  font-family: AppleSDGothicNeo-Regular, '돋움', Dotum;
+  font-family: AppleSDGothicNeo-Regular, "돋움", Dotum;
 }
 .clear_g {
   display: block;
@@ -318,7 +305,7 @@ img {
   line-height: 60px;
   max-width: 370px;
   padding: 0 4px;
-  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic';
+  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic";
 }
 .box_person_info .info_text .person_btn {
   display: block;
@@ -343,7 +330,7 @@ img {
   font-size: 32px;
   line-height: 32px;
   text-align: center;
-  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic';
+  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic";
 }
 .box_person_state li .state_num a {
   text-decoration: none;
@@ -391,7 +378,7 @@ a {
   margin-left: 4px;
   font-size: 20px;
   line-height: 54px;
-  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic';
+  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic";
   color: #000;
   text-align: left;
 }
@@ -479,7 +466,7 @@ table .btn_flexible {
   color: #333;
   font-size: 20px;
   text-align: center;
-  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic';
+  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic";
 }
 .wrap_taken {
   margin-top: 24px;
@@ -508,7 +495,7 @@ table .btn_flexible {
   margin-left: 4px;
   font-size: 20px;
   line-height: 54px;
-  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic';
+  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic";
   color: #000;
   text-align: left;
 }
@@ -543,7 +530,7 @@ table .btn_flexible {
   color: #333;
   font-size: 20px;
   text-align: center;
-  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic';
+  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic";
 }
 .box_no_list2 .btn {
   display: block;
@@ -585,7 +572,7 @@ table .btn_flexible {
   margin-left: 4px;
   font-size: 20px;
   line-height: 54px;
-  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic';
+  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic";
   color: #000;
   text-align: left;
 }
