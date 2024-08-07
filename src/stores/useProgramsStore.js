@@ -1,18 +1,18 @@
-import { defineStore } from 'pinia';
-import axios from 'axios';
+import { defineStore } from "pinia";
+import axios from "axios";
 
-export const useProgramsStore = defineStore('programs', {
+export const useProgramsStore = defineStore("programs", {
   state: () => ({
     programs: [],
     program: {},
     prices: [],
-    sections: [],
+    times: [],
   }),
 
   actions: {
     async getPrograms() {
       const res = await axios.get(
-        'http://localhost:8080/program/readRealTime?page=0&size=12'
+        "http://localhost:8080/program/readRealTime?page=0&size=12"
       );
 
       this.programs = res.data.result;
@@ -26,7 +26,7 @@ export const useProgramsStore = defineStore('programs', {
         );
         this.program = response.data.result;
       } catch (error) {
-        console.error('Failed program detail:', error);
+        console.error("Failed program detail:", error);
       }
     },
 
@@ -37,18 +37,18 @@ export const useProgramsStore = defineStore('programs', {
         );
         this.prices = response.data.result;
       } catch (error) {
-        console.error('Failed price info:', error);
+        console.error("Failed price info:", error);
       }
     },
 
-    async Sections(programId) {
+    async times(programId) {
       try {
         const response = await axios.get(
           `http://localhost:8080/times/${programId}/seq`
         );
-        this.sections = response.data.result;
+        this.times = response.data.result;
       } catch (error) {
-        console.error('Failed sections:', error);
+        console.error("Failed times:", error);
       }
     },
   },
