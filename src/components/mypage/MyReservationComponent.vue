@@ -2,7 +2,9 @@
   <tbody id="rsrvTbody">
     <tr>
       <td class="lst">
-        <p>예매완료</p>
+        <p>
+          {{ reservation.status == 'COMPLETED' ? '예매 완료' : '환불 완료' }}
+        </p>
       </td>
       <td>
         <div class="movie_infor">
@@ -73,7 +75,7 @@
 
 <script setup>
 import { defineProps } from 'vue';
-import { formatDate, formatDateTime } from '@/utils/format';
+import { formatDate, formatDateTime } from '@/utils/formatDate';
 
 // props 정의
 defineProps(['reservation']);
