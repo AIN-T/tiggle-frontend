@@ -73,82 +73,11 @@
                     <th></th>
                   </tr>
                 </thead>
-                <tbody id="rsrvTbody">
-                  <tr>
-                    <td class="lst">
-                      <p>예매완료</p>
-                    </td>
-                    <td>
-                      <div class="movie_infor">
-                        <div class="thumb_90x125 img">
-                          <a
-                            href="javascript:goRsrvDetail('S', '2024080107889918');"
-                          >
-                            <img
-                              src="https://cdnticket.melon.co.kr/resource/image/upload/product/2024/05/2024052819390959351f00-51ba-4540-9c9c-9588bc1ada99.jpg"
-                              width="90"
-                              alt=""
-                            />
-                            <span class="frame"></span>
-                          </a>
-                        </div>
-                        <p class="infor_text">
-                          <span
-                            class="ico_list ico_list1"
-                            style="display: inline"
-                            >좌석우위</span
-                          >
-                          <span class="movie_title"
-                            ><a
-                              href="javascript:goRsrvDetail('S', '2024080107889918');"
-                              >뮤지컬 〈베르사유의 장미〉</a
-                            ></span
-                          >
-                          <span class="movie_date">
-                            2024.07.16 ~ 2024.10.13
-                          </span>
-                          <span class="movie_spot" title="충무아트센터 대극장">
-                            충무아트센터 대극장
-                          </span>
-                        </p>
-                      </div>
-                    </td>
-                    <td>
-                      <div class="booking_infor">
-                        <dl>
-                          <dt>예매일</dt>
-                          <dd>2024.08.01</dd>
-                        </dl>
-                        <dl>
-                          <dt>예약번호</dt>
-                          <dd><span class="fc_green">M247190855</span></dd>
-                        </dl>
-                        <dl>
-                          <dt>관람일</dt>
-                          <dd>2024.08.09(금) 14:30</dd>
-                        </dl>
-                        <dl>
-                          <dt>교환요청</dt>
-                          <dd>5회</dd>
-                        </dl>
-                      </div>
-                    </td>
-                    <td class="lst">
-                      <div class="here">
-                        <router-link
-                          to="/reservation"
-                          class="btn_flexible btn_arr"
-                          ><span>예매 상세</span></router-link
-                        >
-                      </div>
-                      <div class="here" @click="openPopup">
-                        <a class="btn_flexible btn_arr"
-                          ><span>교환 요청</span></a
-                        >
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
+                <MyReservationComponent
+                  v-for="reservation in programStore.myReservations"
+                  :key="reservation.idx"
+                  :reservation="reservation"
+                />
               </table>
             </div>
             <div class="box_no_list" id="divNotFound" style="display: none">
@@ -233,38 +162,31 @@
   </div>
 </template>
 
-<script>
-import { mapStores } from 'pinia';
+<script setup>
+import { onMounted } from 'vue';
 import { useExchangeListStore } from '@/stores/useExchangeListStore.js';
+import { useProgramsStore } from '@/stores/useProgramsStore';
+import { useRouter } from 'vue-router';
+import MyReservationComponent from './MyReservationComponent.vue';
 
-export default {
-  name: 'MyPageComponent',
-  computed: {
-    ...mapStores(useExchangeListStore),
-  },
+const exchangeListStore = useExchangeListStore();
+const programStore = useProgramsStore();
+const router = useRouter();
 
-  mounted() {
-    this.exchangeListStore.getData(0);
-  },
-  data() {
-    return {};
-  },
-  methods: {
-    formatNumber(value) {
-      return new Intl.NumberFormat().format(value);
-    },
-    goToDetail(idx) {
-      this.$router.push(`/exchange/${idx}`);
-    },
-    openPopup() {
-      var popUrl = '/seat'; //팝업창에 출력될 페이지 URL
+// 컴포넌트가 마운트될 때 데이터 가져오기
+onMounted(async () => {
+  await exchangeListStore.getData(0);
+  await programStore.getMyReservations();
+});
 
-      var popOption =
-        'width=986, height=682, resizable=no, scrollbars=no, status=no;'; //팝업창 옵션(optoin)
+// 숫자 포맷팅 함수
+const formatNumber = (value) => {
+  return new Intl.NumberFormat().format(value);
+};
 
-      window.open(popUrl, '', popOption);
-    },
-  },
+// 상세 페이지로 이동하는 함수
+const goToDetail = (idx) => {
+  router.push(`/exchange/${idx}`);
 };
 </script>
 
@@ -275,53 +197,42 @@ export default {
   border: 1px solid #ccc;
   padding: 10px;
 }
-
 .scrollable::-webkit-scrollbar {
   width: 10px;
 }
-
 .scrollable::-webkit-scrollbar-track {
   background: #f7f7f7;
   border-radius: 10px;
 }
-
 .scrollable::-webkit-scrollbar-thumb {
   background: #cdcdcd;
   border-radius: 10px;
 }
-
 .scrollable::-webkit-scrollbar-thumb:hover {
   background: #9f9f9f;
 }
-
 .exchange_list {
   display: flex;
   justify-content: space-between;
 }
-
 .box_sorting_menu {
   position: absolute;
   top: 20px;
   right: 0;
 }
-
 .list_sorting_menu {
   padding-top: 8px;
 }
-
 .list_sorting_menu li {
   display: inline-block;
 }
-
 .list_sorting_menu li.on a {
   color: #00b523;
-  font-weight: bold;
+  font-weight: 700;
 }
-
 .list_sorting_menu li.first a {
-  background: none;
+  background: 0 0;
 }
-
 .list_sorting_menu li a {
   display: block;
   padding: 0 17px 0 20px;
@@ -331,17 +242,6 @@ export default {
   color: #333;
   font-family: AppleSDGothicNeo-Regular, '돋움', Dotum;
 }
-
-.here {
-  border: 2px solid #c1c1c1;
-  border-radius: 5px;
-  width: 100px;
-  margin: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .clear_g {
   display: block;
   overflow: visible;
@@ -419,20 +319,6 @@ img {
   max-width: 370px;
   padding: 0 4px;
   font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic';
-}
-.box_person_info .info_text .person_id .icon.kakao {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  margin-right: 8px;
-  background: url(//cdnticket.melon.co.kr/resource/image/web/common/ico_kakao.png)
-    no-repeat 0 0;
-  background-size: 20px 20px;
-  text-indent: -9999em;
-  vertical-align: middle;
-}
-i {
-  font-style: italic;
 }
 .box_person_info .info_text .person_btn {
   display: block;
@@ -562,105 +448,8 @@ table.tbl_style02 thead th {
   font-weight: 400;
   text-align: center;
 }
-.box_ticket_list table.tbl_style02 tbody td.fst {
-  padding-top: 43px;
-}
-.box_ticket_list table.tbl_style02 tbody td {
-  padding: 25px 0 24px;
-  font-size: 16px;
-}
-table.tbl_style02 tbody td {
-  border-bottom: 1px solid #e9e9e9;
-  text-align: center;
-  vertical-align: top;
-}
-.box_ticket_list table.tbl_style02 tbody td {
-  padding: 25px 0 24px;
-  font-size: 16px;
-}
-table.tbl_style02 tbody td {
-  border-bottom: 1px solid #e9e9e9;
-  text-align: center;
-  vertical-align: top;
-}
-.box_ticket_list table.tbl_style02 tbody td .movie_infor .img {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-.thumb_90x125,
-.thumb_90x125 .frame {
-  width: 90px;
-  height: 125px;
-}
-.box_ticket_list table.tbl_style02 tbody td .movie_infor .img a {
-  width: 90px;
-  height: 125px;
-  overflow: hidden;
-  display: block;
-}
-.box_ticket_list table.tbl_style02 tbody td .movie_infor .img img {
-  width: 90px;
-}
-.thumb_117x117 img,
-.thumb_130x180 img,
-.thumb_130x184 img,
-.thumb_135x135 img,
-.thumb_160x225 img,
-.thumb_180x250 img,
-.thumb_190x142 img,
-.thumb_234x176 img,
-.thumb_238x178 img,
-.thumb_268x120 img,
-.thumb_268x155 img,
-.thumb_280x166 img,
-.thumb_314x235 img,
-.thumb_320x400 img,
-.thumb_339x328 img,
-.thumb_340x328 img,
-.thumb_545x150 img,
-.thumb_660x328 img,
-.thumb_661x328 img,
-.thumb_90x125 img,
-.thumb_90x90 img {
-  vertical-align: top;
-}
 img {
   border: 0 none;
-}
-.thumb_90x125 .frame {
-  background: 0 0;
-  width: 88px;
-  height: 123px;
-  z-index: 10;
-  left: 0;
-  border: 1px solid #000;
-  opacity: 0.03;
-}
-.thumb_90x125,
-.thumb_90x125 .frame {
-  width: 90px;
-  height: 125px;
-}
-.thumb_130x180 .frame,
-.thumb_130x184 .frame,
-.thumb_160x225 .frame,
-.thumb_180x250 .frame,
-.thumb_320x400 .frame,
-.thumb_90x125 .frame {
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  background: url(//cdnticket.melon.co.kr/resource/image/web/common/bg_frame.png)
-    no-repeat;
-}
-.box_ticket_list table.tbl_style02 tbody td .movie_infor .infor_text {
-  padding-left: 104px;
-  font-size: 13px;
-}
-.box_ticket_list table.tbl_style02 tbody td .movie_infor .infor_text .ico_list {
-  margin-right: 5px;
 }
 .ico_list1 {
   background-color: #41d26b;
@@ -675,149 +464,10 @@ img {
   color: #fff;
   text-align: center;
 }
-.box_ticket_list
-  table.tbl_style02
-  tbody
-  td
-  .movie_infor
-  .infor_text
-  .movie_title {
-  display: block;
-  width: 100%;
-  height: 35px;
-  padding-top: 5px;
-  overflow: hidden;
-}
-.box_ticket_list table.tbl_style02 tbody td .movie_infor .infor_text {
-  padding-left: 104px;
-  font-size: 13px;
-}
-.box_ticket_list table.tbl_style02 tbody td .movie_infor {
-  position: relative;
-  height: 126px;
-  padding-right: 50px;
-  text-align: left;
-  overflow: hidden;
-}
-.box_ticket_list table.tbl_style02 tbody td {
-  padding: 25px 0 24px;
-  font-size: 16px;
-}
-table.tbl_style02 tbody td {
-  border-bottom: 1px solid #e9e9e9;
-  text-align: center;
-  vertical-align: top;
-}
-.box_ticket_list
-  table.tbl_style02
-  tbody
-  td
-  .movie_infor
-  .infor_text
-  .movie_title
-  a {
-  line-height: 18px;
-  color: #333;
-}
-.box_ticket_list
-  table.tbl_style02
-  tbody
-  td
-  .movie_infor
-  .infor_text
-  .movie_date {
-  display: block;
-  margin-top: 13px;
-  color: #666;
-  font-size: 12px;
-  letter-spacing: 0;
-}
-.box_ticket_list
-  table.tbl_style02
-  tbody
-  td
-  .movie_infor
-  .infor_text
-  .movie_spot {
-  display: block;
-  margin-top: 1px;
-  color: #666;
-  height: auto;
-  max-height: 38px;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  word-wrap: break-word;
-}
-.box_ticket_list table.tbl_style02 tbody td {
-  padding: 25px 0 24px;
-  font-size: 16px;
-}
-table.tbl_style02 tbody td {
-  border-bottom: 1px solid #e9e9e9;
-  text-align: center;
-  vertical-align: top;
-}
-.box_ticket_list table.tbl_style02 tbody td .booking_infor {
-  padding-top: 19px;
-  text-align: left;
-  font-size: 13px;
-}
-.box_ticket_list table.tbl_style02 tbody td .booking_infor dt {
-  display: inline-block;
-  width: 63px;
-  margin-bottom: 5px;
-  vertical-align: top;
-}
-.box_ticket_list table.tbl_style02 tbody td .booking_infor dd {
-  display: inline-block;
-  margin-bottom: 5px;
-  letter-spacing: 0;
-}
-.fc_green {
-  color: #00b523;
-}
-.box_ticket_list table.tbl_style02 tbody td.lst {
-  padding-top: 44px;
-}
-.box_ticket_list table.tbl_style02 tbody td {
-  padding: 25px 0 24px;
-  font-size: 16px;
-}
-table.tbl_style02 tbody td {
-  border-bottom: 1px solid #e9e9e9;
-  text-align: center;
-  vertical-align: top;
-}
-.box_ticket_list table.tbl_style02 tbody td.lst p {
-  margin-bottom: 13px;
-  color: #333;
-}
 table .btn_flexible {
   vertical-align: top;
   margin-top: -6px;
   margin-left: 5px;
-}
-.btn_arr {
-  display: inline-block;
-  overflow: hidden;
-  height: 28px;
-  padding: 0 24px 0 0;
-  background-position: right -80px;
-}
-
-.btn_arr span {
-  display: inline-block;
-  overflow: hidden;
-  height: 18px;
-  padding: 5px 0 5px 13px;
-  background-position: left -80px;
-  font-size: 12px;
-  line-height: 20px;
-  color: #666;
-  text-align: center;
-  vertical-align: top;
 }
 .box_no_list {
   height: 143px;
@@ -978,7 +628,6 @@ table .btn_flexible {
   height: 18px;
   padding-left: 11px;
 }
-
 .btn_flexible_ico1 span {
   background-position: right -110px;
   padding-right: 8px;
