@@ -8,11 +8,12 @@ export const useProgramsStore = defineStore('programs', {
     prices: [],
     times: [],
     myReservations: [],
+    myReservation: {},
   }),
 
   actions: {
     async getPrograms() {
-      const res = await axios.get('/api/readRealTime?page=0&size=12');
+      const res = await axios.get('/api/program/readRealTime?page=0&size=12');
 
       this.programs = res.data.result;
       console.log(this.programs);
@@ -52,7 +53,21 @@ export const useProgramsStore = defineStore('programs', {
         });
 
         this.myReservations = response.data.result;
-        console.log('hi');
+      } catch (error) {
+        console.log('Failed get', error);
+      }
+    },
+
+    async getMyReservation(id) {
+      try {
+        const response = await axios.get(
+          '/api/reservation/read?reservationId=' + id,
+          {
+            withCredentials: true,
+          }
+        );
+
+        this.myReservation = response.data.result;
       } catch (error) {
         console.log('Failed get', error);
       }
