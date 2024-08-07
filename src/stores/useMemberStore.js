@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
+import router from '@/router';
 
 axios.interceptors.response.use(
   (response) => response,
@@ -23,6 +24,7 @@ export const useMemberStore = defineStore('member', {
         let res = await axios.post('/api/login', member);
         if (res.status === 200) {
           this.isLoggedIn = true;
+
           return true;
         } else {
           return false;
@@ -31,7 +33,7 @@ export const useMemberStore = defineStore('member', {
         console.log(error);
 
         if (error.response && error.response.status === 401) {
-          console.log('401에러');
+          console.log('401 에러');
         } else if (error.response && error.response.status === 405) {
           console.log('405 에러 처리');
         }
@@ -47,13 +49,16 @@ export const useMemberStore = defineStore('member', {
       }
     },
 
-    deleteCookie(name) {
-      document.cookie = name + '=; Max-Age=0; path=/'; // 모든 경로에서 쿠키 삭제
-    },
+    async logout() {
+      let res = await axios.post('/api/logout', {}, { withCredentials: true });
 
-    logout() {
-      this.isLoggedIn = false;
-      this.deleteCookie('AToken');
+      if (res.status == 200) {
+        this.isLoggedIn = false;
+
+        router.push('/');
+      } else {
+        return false;
+      }
     },
   },
 });

@@ -22,8 +22,8 @@ const requireLogin = async (from, to, next) => {
   }
 
   next({
-    path: "/login",
-    query: { redirect: to.fullPath },
+    path: '/login',
+    query: { redirect: from.fullPath },
   });
 };
 

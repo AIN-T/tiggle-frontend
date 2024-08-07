@@ -10,8 +10,6 @@ export const useExchangeListStore = defineStore('exchangeList', {
         withCredentials: true,
       });
 
-      console.log(res);
-
       if (res.status === 200) {
         this.exchangeList = res.data.result;
       }
