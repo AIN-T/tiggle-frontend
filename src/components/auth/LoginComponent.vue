@@ -163,17 +163,26 @@
 
 <script setup>
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useMemberStore } from '@/stores/useMemberStore';
 
 const memberStore = useMemberStore();
 const router = useRouter();
+const route = useRoute();
 const member = ref({ email: null, password: null });
 
-const login = () => {
-  const result = memberStore.login(member.value);
+const login = async () => {
+  const result = await memberStore.login(member.value);
+
   if (result) {
-    router.push('/');
+    const redirectPath = route.query.redirect || '/';
+
+    if (redirectPath == '/seat') {
+      window.close();
+      return;
+    }
+
+    router.push(redirectPath);
   }
 };
 </script>
