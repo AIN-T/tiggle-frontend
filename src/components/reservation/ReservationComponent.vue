@@ -48,7 +48,11 @@
             <div class="infor_text_check">
               <dl>
                 <dt>예매번호</dt>
-                <dd><span class="fc_green" id="txtRsrvNo">M247190855</span></dd>
+                <dd>
+                  <span class="fc_green" id="txtRsrvNo">{{
+                    programStore.myReservation.ticketNumber
+                  }}</span>
+                </dd>
                 <dt id="dtPlaceName">공연장</dt>
                 <dd>
                   <a
@@ -56,27 +60,49 @@
                     class="theater"
                     id="txtPlaceName"
                     title="충무아트센터 대극장"
-                    ><span class="place">충무아트센터 대극장</span><em></em
+                    ><span class="place">{{
+                      programStore.myReservation.locationName
+                    }}</span
+                    ><em></em
                   ></a>
                 </dd>
               </dl>
               <dl>
                 <dt>예매일시</dt>
-                <dd id="txtRsrvDate">2024.08.01</dd>
+                <dd id="txtRsrvDate">
+                  {{ formatDate(programStore.myReservation.createdAt) }}
+                </dd>
                 <dt id="titleMemberName">예매자</dt>
-                <dd id="txtMemberName">이재룡</dd>
+                <dd id="txtMemberName">
+                  {{ programStore.myReservation.name }}
+                </dd>
               </dl>
               <dl>
                 <dt>관람일시</dt>
-                <dd id="txtScheduleDate">2024.08.09 (금) 14:30</dd>
-                <dt id="titleCancelDt">취소가능</dt>
-                <dd id="txtCancelDt">2024.08.08 17:00 까지</dd>
+                <dd id="txtScheduleDate">
+                  {{ formatDateTime(programStore.myReservation.date) }}
+                </dd>
+                <dt id="titlePayStatus">상태</dt>
+                <dd id="txtPayStatus">
+                  {{
+                    programStore.myReservation.status == 'COMPLETED'
+                      ? '예매 완료'
+                      : '환불 완료'
+                  }}
+                </dd>
               </dl>
               <dl>
                 <dt>매수</dt>
                 <dd id="txtRsrvVolume">1매</dd>
-                <dt id="titlePayStatus">상태</dt>
-                <dd id="txtPayStatus">예매완료(미입금)</dd>
+                <template
+                  v-if="programStore.myReservation.status == 'COMPLETED'"
+                >
+                  <dt id="titleCancelDt">취소가능</dt>
+                  <dd id="txtCancelDt">
+                    {{ formatRefundDate(programStore.myReservation.date) }}
+                    17:00 까지
+                  </dd>
+                </template>
               </dl>
             </div>
           </div>
@@ -93,12 +119,6 @@
             </div>
           </div>
         </div>
-        <!-- //구매 티켓 정보 -->
-        <!-- FTTICKET-298 : 인증코드 발급 기능 추가 220401 -->
-
-        <!-- 예매자 부가정보 -->
-
-        <!-- 티켓 수령방법 -->
         <div class="wrap_get" id="wrap_get">
           <h2 class="tit_sub_float">티켓수령방법</h2>
           <div class="ctr_detail" id="rsrvModifyBtn">
@@ -257,40 +277,6 @@
               value="DV0002"
             />
 
-            <!-- 2017.09.28 무통장환불계죄입력용 추가 by. eddy-->
-            <input
-              type="hidden"
-              id="refndUserName"
-              name="refndUserName"
-              value=""
-            />
-            <input
-              type="hidden"
-              id="refndBankName"
-              name="refndBankName"
-              value=""
-            />
-            <input
-              type="hidden"
-              id="refndBankCode"
-              name="refndBankCode"
-              value=""
-            />
-            <input
-              type="hidden"
-              id="refndAccntNo"
-              name="refndAccntNo"
-              value=""
-            />
-            <input type="hidden" id="payNo" name="payNo" value="" />
-            <input
-              type="hidden"
-              id="refundStateCode"
-              name="refundStateCode"
-              value=""
-            />
-            <!-- end -->
-
             <div class="ctr_detail2" id="btnSeatView" style="">
               <a
                 href="javascript:popRsrvSeatCheck('2024080107889918', '82c51f7f4f9174cb973651e73fe44a0e9679e8000860b4253ce2a5b832f6f6df');"
@@ -343,10 +329,18 @@
                 </thead>
                 <tbody id="seatTable">
                   <tr>
-                    <td class="fst lst">VIP석</td>
-                    <td class="seat_site fst lst">1층 15열 28번</td>
+                    <td class="fst lst">
+                      {{ programStore.myReservation.gradeName }}석
+                    </td>
+                    <td class="seat_site fst lst">
+                      {{ programStore.myReservation.seatInfo }}
+                    </td>
                     <td class="seat_infor fst lst">기본가</td>
-                    <td class="seat_price fst lst">170,000원</td>
+                    <td class="seat_price fst lst">
+                      {{
+                        formatNumber(programStore.myReservation.totalPrice)
+                      }}원
+                    </td>
                     <td class="seat_cancle fst lst">
                       <label for="cancelok">취소 가능 </label
                       ><input
@@ -365,8 +359,11 @@
               <div class="seat_condition">
                 <div class="condition_com">
                   <p class="con1" id="txtCancelCloseDtKr">
-                    2024년 08월 08일 17시 00분 까지 예매취소가능(취소수수료 :
-                    티켓금액의 <em>0%~30%</em>)
+                    {{
+                      formatRefundStringDate(programStore.myReservation.date)
+                    }}
+                    17시 00분 까지 예매취소가능(취소수수료 : 티켓금액의
+                    <em>30%</em>)
                   </p>
                   <p class="con2" id="txtCancelCloseDtMsg" style="">
                     * 예매일 이후 취소 시 예매수수료는 환불되지 않습니다. (단,
@@ -498,8 +495,27 @@
   </div>
 </template>
 
-<script>
-export default {};
+<script setup>
+import { onMounted } from 'vue';
+import { useProgramsStore } from '@/stores/useProgramsStore';
+import { useRoute } from 'vue-router';
+import {
+  formatDate,
+  formatDateTime,
+  formatRefundDate,
+  formatRefundStringDate,
+} from '@/utils/formatDate';
+
+import { formatNumber } from '@/utils/formatPrice';
+
+const programStore = useProgramsStore();
+const route = useRoute();
+
+const id = route.params.id;
+
+onMounted(async () => {
+  await programStore.getMyReservation(id);
+});
 </script>
 
 <style scoped>

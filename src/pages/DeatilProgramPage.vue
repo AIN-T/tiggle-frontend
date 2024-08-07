@@ -5,12 +5,12 @@
 </template>
 
 <script>
-import HeaderComponent from "../components/common/HeaderComponent.vue";
-import FooterComponent from "../components/common/FooterComponent.vue";
-import DetailViewComponent from "../components/reservation/DetailViewComponent.vue";
+import HeaderComponent from '../components/common/HeaderComponent.vue';
+import FooterComponent from '../components/common/FooterComponent.vue';
+import DetailViewComponent from '../components/reservation/DetailViewComponent.vue';
 
 export default {
-  name: "MainPage",
+  name: 'DetailPage',
   components: {
     DetailViewComponent,
     HeaderComponent,
