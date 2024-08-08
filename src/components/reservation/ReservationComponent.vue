@@ -9,39 +9,22 @@
         <div class="wrap_ticket">
           <div class="box_ticket">
             <div class="img">
-              <a href="javascript:goPerfBoard();"
-                ><img
-                  id="imgPerfImgUrl"
-                  onerror="noImage(this,180,254)"
-                  alt=""
-                  src="https://cdnticket.melon.co.kr/resource/image/upload/product/2024/05/2024052819390959351f00-51ba-4540-9c9c-9588bc1ada99.jpg"
-              /></a>
+              <img
+                id="imgPerfImgUrl"
+                onerror="noImage(this,180,254)"
+                alt=""
+                :src="programStore.myReservation.imageFiles[0]"
+              />
             </div>
             <div class="infor_text">
               <span class="ico_list_b ico_list_b1" id="iconType" style=""
                 >좌석우위</span
               >
               <p class="ticket_title">
-                <a href="javascript:goPerfBoard();"
-                  ><span id="txtPerfMainName"
-                    >뮤지컬 〈베르사유의 장미〉</span
+                <a
+                  ><span id="txtPerfMainName">
+                    {{ programStore.myReservation.programName }}</span
                   ></a
-                >
-              </p>
-              <p class="btnzone">
-                <a
-                  href="javascript: goSetList();"
-                  class="btn_flexible btn_arr_down_32"
-                  id="btnLinkSetList"
-                  style="display: none"
-                  ><span>셋리스트 듣기 </span></a
-                >
-                <a
-                  href="javascript: goPerfBoard();"
-                  class="btn_flexible btn_arr_down_32"
-                  id="btnLinkReview"
-                  style="display: none"
-                  ><span>관람후기 작성하기</span></a
                 >
               </p>
             </div>
@@ -56,10 +39,9 @@
                 <dt id="dtPlaceName">공연장</dt>
                 <dd>
                   <a
-                    href="javascript: goPlaceHall();"
                     class="theater"
                     id="txtPlaceName"
-                    title="충무아트센터 대극장"
+                    :title="programStore.myReservation.locationName"
                     ><span class="place">{{
                       programStore.myReservation.locationName
                     }}</span
@@ -121,16 +103,6 @@
         </div>
         <div class="wrap_get" id="wrap_get">
           <h2 class="tit_sub_float">티켓수령방법</h2>
-          <div class="ctr_detail" id="rsrvModifyBtn">
-            <a
-              href="javascript:goRsrvModify('DLV');"
-              id="btnEditDelvyType"
-              style="display: none"
-              class="btn_flexible btn_tB_radius btn_edit_rsrv"
-            >
-              <span>수령방법 변경</span></a
-            >
-          </div>
           <table class="tbl tbl_style01" summary="">
             <caption class="hide"></caption>
             <tbody>
@@ -210,12 +182,7 @@
             >
           </div>
           <table class="tbl tbl_style01" summary="">
-            <caption class="hide"></caption>
             <tbody>
-              <!--tr class="event_pay_method_advtk" style="display:none">
-                                <th>결제방법</th>
-                                <td id="txtAdvtkInfo"></td>
-                            </tr-->
               <tr class="event_pay_method_pay" style="">
                 <th>결제방법</th>
                 <td id="txtPayMethod">신용카드</td>
@@ -249,65 +216,6 @@
           <h2 class="tit_sub_float" id="titleSeatInfo">좌석정보(1매)</h2>
           <!-- @@@ 2016.02.23 매수추가 -->
           <form id="dtlForm" method="get" name="dtlForm">
-            <input
-              type="hidden"
-              id="rsrvSeq"
-              name="rsrvSeq"
-              value="2024080107889918"
-            />
-            <input type="hidden" id="prodId" name="prodId" value="209927" />
-            <input type="hidden" id="pocCode" name="pocCode" value="" />
-            <input
-              type="hidden"
-              id="perfStartDay"
-              name="perfStartDay"
-              value="20240809"
-            />
-            <input
-              type="hidden"
-              id="perfMainName"
-              name="perfMainName"
-              value="뮤지컬 〈베르사유의 장미〉"
-            />
-            <input type="hidden" id="placeId" name="placeId" value="39" />
-            <input
-              type="hidden"
-              id="delvyTypeCode"
-              name="delvyTypeCode"
-              value="DV0002"
-            />
-
-            <div class="ctr_detail2" id="btnSeatView" style="">
-              <a
-                href="javascript:popRsrvSeatCheck('2024080107889918', '82c51f7f4f9174cb973651e73fe44a0e9679e8000860b4253ce2a5b832f6f6df');"
-                class="btn_flexible btn_arr"
-                ><span>위치보기</span></a
-              >
-            </div>
-            <div class="ctr_detail">
-              <!-- @@@ 2016.02.23 천제선택 추가 -->
-              <ul class="ctr_detail_btn">
-                <li class="fst" id="checkSeatAll">
-                  <input
-                    type="checkbox"
-                    id="chkCancelAll"
-                    name="chkCancelAll"
-                    class="chkCancelAll"
-                  /><label for="chkCancelAll" class="chkCancelAll"
-                    >전체선택</label
-                  >
-                </li>
-                <li class="lst" id="btnSeatChange" style="display: none">
-                  <a
-                    href="javascript:;"
-                    class="btn_flexible btn_tB_radius btn_edit_rsrv"
-                    ><span>좌석 변경</span></a
-                  >
-                </li>
-              </ul>
-              <!-- //@@@ 2016.02.23 전체선택 추가 -->
-            </div>
-
             <div class="box_seat">
               <table class="tbl tbl_style03" summary="">
                 <caption class="hide"></caption>
@@ -342,16 +250,7 @@
                       }}원
                     </td>
                     <td class="seat_cancle fst lst">
-                      <label for="cancelok">취소 가능 </label
-                      ><input
-                        type="checkbox"
-                        name="rsrvDtlNo"
-                        value="101"
-                      /><input
-                        type="hidden"
-                        name="seatNo"
-                        value="1층 15열 28번"
-                      />
+                      <label for="cancelok">취소 가능 </label>
                     </td>
                   </tr>
                 </tbody>
@@ -372,23 +271,11 @@
                 </div>
                 <div class="seat_condition_btn">
                   <span class="button btColorGreen" id="btnRsrvCancelPreview"
-                    ><a
-                      href="javascript:;"
-                      onclick="javascript:goRsrvCancelPreview(); return false;"
-                      class="btSizeL"
-                      >예매취소 요청</a
-                    ></span
+                    ><a class="btSizeL">예매취소 요청</a></span
                   >
                 </div>
               </div>
             </div>
-            <input type="hidden" id="seatNoStr" name="seatNoStr" value="" />
-            <input
-              type="hidden"
-              id="rsrvDtlNoAllStr"
-              name="rsrvDtlNoAllStr"
-              value=""
-            />
           </form>
         </div>
 
@@ -519,17 +406,6 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.clear_g {
-  display: block;
-  overflow: visible;
-  width: auto;
-  clear: both;
-}
-
-.index #conts {
-  padding-top: 0;
-}
-
 #conts {
   display: block;
   position: relative;
@@ -538,9 +414,8 @@ onMounted(async () => {
   padding: 0 20px 53px;
   margin: 0 auto;
 }
-
-.screen_out,
-.none {
+.none,
+.screen_out {
   overflow: hidden;
   font-size: 0 !important;
   width: 0 !important;
@@ -548,14 +423,12 @@ onMounted(async () => {
   line-height: 0 !important;
   text-indent: -9999px;
 }
-
 .wrap_ticket {
   overflow: hidden;
   position: relative;
   margin-top: 40px;
   border: 1px solid #ddd;
 }
-
 .wrap_ticket .box_ticket {
   overflow: hidden;
   position: relative;
@@ -563,39 +436,31 @@ onMounted(async () => {
   margin: 29px 29px 29px;
   padding-left: 219px;
 }
-
 .wrap_ticket .box_ticket .img {
   position: absolute;
   left: 0;
   top: 0;
   width: 219px;
 }
-
 .wrap_ticket .box_ticket .img a {
   display: block;
   overflow: hidden;
   width: 180px;
 }
-
 .wrap_ticket .box_ticket .img img {
   width: 180px;
   vertical-align: top;
 }
-
-fieldset,
 img {
   border: 0 none;
 }
-
 .wrap_ticket .box_ticket .infor_text {
   overflow: hidden;
   width: 725px;
 }
-
 .ico_list_b1 {
   background-color: #41d26b;
 }
-
 .ico_list_b {
   display: inline-block;
   overflow: hidden;
@@ -606,7 +471,6 @@ img {
   color: #fff;
   text-align: center;
 }
-
 .wrap_ticket .box_ticket .infor_text .ticket_title a {
   font-size: 28px;
   line-height: 32px;
@@ -614,50 +478,21 @@ img {
   font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic';
   text-decoration: none;
 }
-
-.wrap_ticket .box_ticket .infor_text .btnzone {
-  margin-top: 15px;
-}
-
-.btn_arr_down_32 {
-  display: inline-block;
-  overflow: hidden;
-  height: 32px;
-  padding: 0 20px 0 0;
-  background-position: right -705px;
-}
-
 .btn_flexible,
 .btn_flexible span {
   display: inline-block;
   background: url(//cdnticket.melon.co.kr/resource/image/web/common/btn_flexible_20180510.png)
     no-repeat;
 }
-
-.btn_arr_down_32 span {
-  display: inline-block;
-  overflow: hidden;
-  height: 19px;
-  padding: 9px 10px 4px 15px;
-  background-position: left -705px;
-  font-size: 14px;
-  line-height: 16px;
-  color: #666;
-  text-align: center;
-  vertical-align: top;
-}
-
 .wrap_ticket .box_ticket .infor_text_check {
   margin-top: 42px;
 }
-
 .wrap_ticket .box_ticket .infor_text_check dt {
   display: inline-block;
   width: 62px;
   font-size: 14px;
   margin-bottom: 11px;
 }
-
 .wrap_ticket .box_ticket .infor_text_check dd {
   display: inline-block;
   width: 240px;
@@ -666,16 +501,13 @@ img {
   margin-right: 6px;
   vertical-align: top;
 }
-
 .fc_green {
   color: #00b523;
 }
-
 .wrap_ticket .box_ticket .infor_text_check dd .theater {
   text-decoration: underline;
   vertical-align: top;
 }
-
 .wrap_ticket .box_ticket .infor_text_check dd .place {
   display: inline-block;
   overflow: hidden;
@@ -684,51 +516,42 @@ img {
   text-overflow: ellipsis;
   vertical-align: top;
 }
-
 .wrap_ticket .box_ticket .infor_text_check dt {
   display: inline-block;
   width: 62px;
   font-size: 14px;
   margin-bottom: 11px;
 }
-
 .wrap_ticket .ticket_cancelok {
   position: relative;
   width: 100%;
-  border-top: 1px solid #eeeeee;
+  border-top: 1px solid #eee;
   padding: 22px 0 22px;
 }
-
 .wrap_ticket .ticket_cancelok .cancelok_comm {
   width: 730px;
 }
-
 .wrap_ticket .ticket_cancelok p {
   text-align: center;
   font-size: 20px;
   font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic';
 }
-
 .wrap_ticket .ticket_cancelok .btn_ticket {
   position: absolute;
   top: 11px;
   right: 30px;
 }
-
 .btColorGreen {
   border: 1px solid #41d26b;
   background: #41d26b;
 }
-
 .wrap_ticket .ticket_cancelok .btn_ticket .btSizeL {
   padding-left: 93px;
   padding-right: 93px;
 }
-
 .btColorGreen a.btSizeL {
   color: #fff;
 }
-
 .btSizeL {
   display: inline-block;
   height: 48px;
@@ -736,12 +559,10 @@ img {
   font-size: 16px;
   font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic';
 }
-
 .wrap_get {
   position: relative;
   margin-top: 22px;
 }
-
 .tit_sub_float {
   width: auto;
   height: auto;
@@ -749,7 +570,6 @@ img {
   padding: 9px 0 10px;
   line-height: 1.8;
 }
-
 .tit_sub_float {
   display: block;
   width: 100%;
@@ -761,13 +581,11 @@ img {
   color: #000;
   text-align: left;
 }
-
 .ctr_detail {
   position: absolute;
   top: 15px;
   right: 0;
 }
-
 .btn_tB_radius {
   display: inline-block;
   overflow: hidden;
@@ -775,18 +593,15 @@ img {
   padding: 0 0 0 15px;
   background-position: left -640px;
 }
-
 .btn_flexible,
 .btn_flexible span {
   display: inline-block;
   background: url(//cdnticket.melon.co.kr/resource/image/web/common/btn_flexible_20180510.png)
     no-repeat;
 }
-
 .ctr_detail .btn_tB_radius span {
   width: 90px;
 }
-
 .btn_tB_radius span {
   display: inline-block;
   overflow: hidden;
@@ -800,58 +615,49 @@ img {
   text-align: center;
   vertical-align: top;
 }
-
 table.tbl_style01 {
   width: 100%;
-  border: 1px solid #eeeeee;
+  border: 1px solid #eee;
   color: #666;
 }
-
 .tbl {
   border-collapse: collapse;
   border-spacing: 0;
 }
-
 table.tbl_style01 tbody th.fst {
   padding-top: 26px;
   padding-bottom: 12px;
 }
-
 table.tbl_style01 tbody th {
   width: 166px;
   padding: 10px 10px 9px 30px;
   background: #fafafa;
   font-size: 14px;
   text-align: left;
-  font-weight: normal;
+  font-weight: 400;
   vertical-align: top;
 }
-
 table.tbl_style01 tbody td.fst {
   padding-top: 27px;
 }
-
 table.tbl_style01 tbody td {
   padding: 10px 20px 9px 45px;
   font-size: 14px;
 }
-
 table.tbl_style01 tbody th {
   width: 166px;
   padding: 10px 10px 9px 30px;
   background: #fafafa;
   font-size: 14px;
   text-align: left;
-  font-weight: normal;
+  font-weight: 400;
   vertical-align: top;
 }
-
 .wrap_get table .btn_flexible {
   vertical-align: top;
   margin-top: -6px;
   margin-left: 5px;
 }
-
 .btn_arr {
   display: inline-block;
   overflow: hidden;
@@ -859,7 +665,6 @@ table.tbl_style01 tbody th {
   padding: 0 24px 0 0;
   background-position: right -80px;
 }
-
 .btn_arr span {
   display: inline-block;
   overflow: hidden;
@@ -872,18 +677,15 @@ table.tbl_style01 tbody th {
   text-align: center;
   vertical-align: top;
 }
-
 .wrap_payment {
   position: relative;
   margin-top: 22px;
 }
-
 .ctr_detail {
   position: absolute;
   top: 15px;
   right: 0;
 }
-
 .btn_tB_radius {
   display: inline-block;
   overflow: hidden;
@@ -891,11 +693,9 @@ table.tbl_style01 tbody th {
   padding: 0 0 0 15px;
   background-position: left -640px;
 }
-
 .ctr_detail .btn_tB_radius span {
   width: 90px;
 }
-
 .btn_tB_radius span {
   display: inline-block;
   overflow: hidden;
@@ -909,171 +709,140 @@ table.tbl_style01 tbody th {
   text-align: center;
   vertical-align: top;
 }
-
 table.tbl_style01 {
   width: 100%;
-  border: 1px solid #eeeeee;
+  border: 1px solid #eee;
   color: #666;
 }
-
 .tbl {
   border-collapse: collapse;
   border-spacing: 0;
 }
-
 table.tbl_style01 tbody th {
   width: 166px;
   padding: 10px 10px 9px 30px;
   background: #fafafa;
   font-size: 14px;
   text-align: left;
-  font-weight: normal;
+  font-weight: 400;
   vertical-align: top;
 }
-
 table.tbl_style01 tbody td {
   padding: 10px 20px 9px 45px;
   font-size: 14px;
 }
-
 table.tbl_style01 tbody th {
   width: 166px;
   padding: 10px 10px 9px 30px;
   background: #fafafa;
   font-size: 14px;
   text-align: left;
-  font-weight: normal;
+  font-weight: 400;
   vertical-align: top;
 }
-
 .wrap_seat {
   position: relative;
   margin-top: 22px;
 }
-
 .wrap_seat .ctr_detail2 {
   position: absolute;
   top: 15px;
   left: 140px;
 }
-
 .ctr_detail {
   position: absolute;
   top: 15px;
   right: 0;
 }
-
 .wrap_seat .box_seat {
   border: 1px solid #ddd;
 }
-
 table.tbl_style03 {
   width: 100%;
 }
-
 .tbl {
   border-collapse: collapse;
   border-spacing: 0;
 }
-
 .wrap_seat .box_seat table.tbl_style03 th {
   padding: 17px 0 15px;
   font-size: 14px;
 }
-
 table.tbl_style03 thead th {
   background: #fafafa;
-  font-weight: normal;
+  font-weight: 400;
   text-align: center;
 }
-
 .wrap_seat .box_seat table.tbl_style03 td.lst {
   padding-bottom: 20px;
 }
-
 .wrap_seat .box_seat table.tbl_style03 td.fst {
   padding-top: 20px;
 }
-
 .wrap_seat .box_seat table.tbl_style03 td {
   padding: 10px 0;
   font-size: 14px;
   text-align: center;
 }
-
 table.tbl_style03 tbody td {
   vertical-align: top;
 }
-
 .wrap_seat .box_seat table.tbl_style03 td.seat_site {
   text-align: left;
   padding-left: 32px;
 }
-
 .wrap_seat .box_seat table.tbl_style03 td.seat_infor {
   padding-left: 40px;
   text-align: left;
 }
-
 .wrap_seat .box_seat table.tbl_style03 td.seat_price {
   padding-right: 35px;
   text-align: right;
 }
-
 .wrap_seat .box_seat table.tbl_style03 td.seat_cancle {
   padding-left: 70px;
   text-align: left;
 }
-
 .wrap_seat .box_seat table.tbl_style03 td.seat_cancle label {
   padding-right: 5px;
 }
-
 .wrap_seat .box_seat .seat_condition {
   position: relative;
-  border-top: 1px solid #eeeeee;
+  border-top: 1px solid #eee;
   margin: 0 20px 20px;
 }
-
 .wrap_seat .box_seat .seat_condition .condition_com {
   display: block;
   width: 794px;
   padding: 22px 0 0;
 }
-
 .wrap_seat .box_seat .seat_condition .condition_com p.con1 {
   font-size: 20px;
   color: #00cd3c;
   font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic';
   text-align: center;
 }
-
 .wrap_seat .box_seat .seat_condition .condition_com p.con2 {
   margin-top: 3px;
   font-size: 13px;
-  color: #666666;
+  color: #666;
   text-align: center;
 }
-
 .wrap_seat .box_seat .seat_condition .seat_condition_btn {
   position: absolute;
   top: 20px;
   right: 0;
 }
-
 .btColorGreen {
   border: 1px solid #41d26b;
   background: #41d26b;
 }
-
 .wrap_seat .box_seat .seat_condition .seat_condition_btn .btSizeL {
   width: 170px;
 }
-
 .btColorGreen a.btSizeL {
   color: #fff;
 }
-
 .btSizeL {
   display: inline-block;
   height: 48px;
@@ -1090,78 +859,65 @@ table.tbl_style03 tbody td {
   font-size: 13px;
   letter-spacing: 0;
 }
-
 table.tbl_style01 tbody th.fst {
   padding-top: 26px;
   padding-bottom: 12px;
 }
-
 table.tbl_style01 tbody th {
   width: 166px;
   padding: 10px 10px 9px 30px;
   background: #fafafa;
   font-size: 14px;
   text-align: left;
-  font-weight: normal;
+  font-weight: 400;
   vertical-align: top;
 }
-
 .wrap_commission .box_commission table.tbl_style01 td.fst {
   padding-top: 26px;
 }
-
 .wrap_commission .box_commission table.tbl_style01 td {
   padding: 10px 0 9px 10px;
   font-size: 13px;
   letter-spacing: 0;
 }
-
 table.tbl_style01 tbody td.fst {
   padding-top: 27px;
 }
-
 .wrap_commission .box_commission table.tbl_style01 td {
   padding: 10px 0 9px 10px;
   font-size: 13px;
   letter-spacing: 0;
 }
-
 table.tbl_style01 tbody th {
   width: 166px;
   padding: 10px 10px 9px 30px;
   background: #fafafa;
   font-size: 14px;
   text-align: left;
-  font-weight: normal;
+  font-weight: 400;
   vertical-align: top;
 }
-
 .wrap_commission .box_commission table.tbl_style01 td {
   padding: 10px 0 9px 10px;
   font-size: 13px;
   letter-spacing: 0;
 }
-
 .wrap_commission .box_commission table.tbl_style01 td.lst {
   padding-bottom: 26px;
   padding-top: 13px;
 }
-
 .wrap_note {
   position: relative;
   margin-top: 22px;
 }
-
 .wrap_note .box_note {
   background: #fafafa;
   padding: 29px 25px 20px;
 }
-
 .wrap_note .box_note .dotlist4x4 li {
   margin-bottom: 11px;
   color: #888;
 }
-
 .dotlist4x4 li {
   margin-bottom: 7px;
   padding: 0 0 0 13px;
@@ -1169,28 +925,5 @@ table.tbl_style01 tbody th {
     no-repeat 0 7px;
   font-size: 13px;
   line-height: 18px;
-}
-
-.wrap_btn_zone {
-  text-align: center;
-  margin: 50px 0;
-}
-
-.wrap_btn_zone {
-  text-align: center;
-  margin: 40px 0;
-}
-
-.btColorWhite {
-  border: 1px solid #cccccc;
-  background: #fff;
-}
-
-.mr5 {
-  margin-right: 5px !important;
-}
-
-.btColorWhite a.btSizeL {
-  color: #333;
 }
 </style>

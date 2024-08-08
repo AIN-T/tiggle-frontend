@@ -112,36 +112,10 @@
                 </div>
               </div>
 
-              <div class="list_evnt scrollable">
-                <ul id="eventBox">
-                  <li
-                    class="exchange_list"
-                    v-for="exchange in exchangeListStore.exchangeList"
-                    :key="exchange.idx"
-                    @click="goToDetail(exchange.exchangeId)"
-                  >
-                    <div>{{ exchange.programName }}</div>
-                    <div>{{ exchange.otherTicketInfo.grade }}석</div>
-                    <div>
-                      {{ exchange.otherTicketInfo.sectionName }} 1층 3열
-                      {{ exchange.otherTicketInfo.seatNumber }}번
-                    </div>
-                    <div>
-                      {{ formatNumber(exchange.otherTicketInfo.price) }} 원
-                    </div>
-                    <div>{{ exchange.isWatch }}</div>
-                  </li>
-                  <!-- <div
-                    class="box_no_list2"
-                    style="border: 0px; padding-top: 75px"
-                  >
-                    <p>교환 내역이 없습니다.</p>
-                  </div> -->
-                </ul>
-              </div>
+              <MyExchangeComponent
+                :exchangeList="exchangeListStore.exchangeList"
+              />
             </div>
-            <!-- //최근 참여 이벤트 -->
-            <!-- 최근 1:1 문의 -->
             <MyPointComponent></MyPointComponent>
           </div>
         </div>
@@ -151,20 +125,19 @@
 </template>
 
 <script setup>
-import { onMounted } from "vue";
-import { useExchangeListStore } from "@/stores/useExchangeListStore.js";
-import { useProgramsStore } from "@/stores/useProgramsStore";
-import { useRouter } from "vue-router";
-import MyReservationComponent from "./MyReservationComponent.vue";
-import MyPointComponent from "./MyPointComponent.vue";
-import { usePointStore } from "@/stores/usePointStore";
-import { useMyHeaderStore } from "@/stores/useMyHeaderStore";
+import { onMounted } from 'vue';
+import { useExchangeListStore } from '@/stores/useExchangeListStore.js';
+import { useProgramsStore } from '@/stores/useProgramsStore';
+import MyReservationComponent from './MyReservationComponent.vue';
+import MyPointComponent from './MyPointComponent.vue';
+import { usePointStore } from '@/stores/usePointStore';
+import { useMyHeaderStore } from '@/stores/useMyHeaderStore';
+import MyExchangeComponent from './MyExchangeComponent.vue';
 
 const exchangeListStore = useExchangeListStore();
 const programStore = useProgramsStore();
 const pointStore = usePointStore();
 const myHeaderStore = useMyHeaderStore();
-const router = useRouter();
 
 // 컴포넌트가 마운트될 때 데이터 가져오기
 onMounted(async () => {
@@ -174,16 +147,6 @@ onMounted(async () => {
   await pointStore.getPointData(); // reqType을 매개변수로 전달할 필요 없음
   await myHeaderStore.getMyHeader();
 });
-
-// 숫자 포맷팅 함수
-const formatNumber = (value) => {
-  return new Intl.NumberFormat().format(value);
-};
-
-// 상세 페이지로 이동하는 함수
-const goToDetail = (idx) => {
-  router.push(`/exchange/${idx}`);
-};
 </script>
 
 <style scoped>
@@ -236,7 +199,7 @@ const goToDetail = (idx) => {
     no-repeat left 6px;
   font-size: 16px;
   color: #333;
-  font-family: AppleSDGothicNeo-Regular, "돋움", Dotum;
+  font-family: AppleSDGothicNeo-Regular, '돋움', Dotum;
 }
 .clear_g {
   display: block;
@@ -314,7 +277,7 @@ img {
   line-height: 60px;
   max-width: 370px;
   padding: 0 4px;
-  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic";
+  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic';
 }
 .box_person_info .info_text .person_btn {
   display: block;
@@ -339,7 +302,7 @@ img {
   font-size: 32px;
   line-height: 32px;
   text-align: center;
-  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic";
+  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic';
 }
 .box_person_state li .state_num a {
   text-decoration: none;
@@ -387,7 +350,7 @@ a {
   margin-left: 4px;
   font-size: 20px;
   line-height: 54px;
-  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic";
+  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic';
   color: #000;
   text-align: left;
 }
@@ -475,7 +438,7 @@ table .btn_flexible {
   color: #333;
   font-size: 20px;
   text-align: center;
-  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic";
+  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic';
 }
 .wrap_taken {
   margin-top: 24px;
@@ -504,7 +467,7 @@ table .btn_flexible {
   margin-left: 4px;
   font-size: 20px;
   line-height: 54px;
-  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic";
+  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic';
   color: #000;
   text-align: left;
 }
@@ -539,7 +502,7 @@ table .btn_flexible {
   color: #333;
   font-size: 20px;
   text-align: center;
-  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic";
+  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic';
 }
 .box_no_list2 .btn {
   display: block;
@@ -581,7 +544,7 @@ table .btn_flexible {
   margin-left: 4px;
   font-size: 20px;
   line-height: 54px;
-  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic";
+  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic';
   color: #000;
   text-align: left;
 }
