@@ -12,7 +12,7 @@
         :class="[
           'seat',
           { occupied: !seat.active },
-          { inactive: !seat.enabled },
+          { inactive: !seat.enable },
         ]"
         :key="seat.idx"
       ></div>
@@ -21,7 +21,7 @@
 </template>
 
 <script setup>
-import { ref, defineEmits } from 'vue';
+import { ref, defineEmits, onMounted } from 'vue';
 import { useBookingStore } from '@/stores/useBookingStore';
 
 const emit = defineEmits(['seatInfo']);
@@ -30,133 +30,24 @@ const bookingStore = useBookingStore();
 const selectedSeat = ref(null);
 const selectedSeatInfo = ref(null);
 
-// const seatLists = [
-//   [
-//     {
-//       seatId: 66,
-//       row: 'A',
-//       seatNumber: 1,
-//       active: true,
-//       enabled: true,
-//     },
-//     {
-//       seatId: 67,
-//       row: 'A',
-//       seatNumber: 2,
-//       active: true,
-//       enabled: true,
-//     },
-//     {
-//       seatId: 68,
-//       row: 'A',
-//       seatNumber: 3,
-//       active: true,
-//       enabled: true,
-//     },
-//     {
-//       seatId: 69,
-//       row: 'A',
-//       seatNumber: 4,
-//       active: true,
-//       enabled: true,
-//     },
-//   ],
-//   [
-//     {
-//       seatId: 70,
-//       row: 'B',
-//       seatNumber: 1,
-//       active: true,
-//       enabled: false,
-//     },
-//     {
-//       seatId: 71,
-//       row: 'B',
-//       seatNumber: 2,
-//       active: true,
-//       enabled: false,
-//     },
-//     {
-//       seatId: 72,
-//       row: 'B',
-//       seatNumber: 3,
-//       active: true,
-//       enabled: false,
-//     },
-//     {
-//       seatId: 73,
-//       row: 'B',
-//       seatNumber: 4,
-//       active: false,
-//       enabled: true,
-//     },
-//   ],
-//   [
-//     {
-//       seatId: 74,
-//       row: 'C',
-//       seatNumber: 1,
-//       active: true,
-//       enabled: true,
-//     },
-//     {
-//       seatId: 75,
-//       row: 'C',
-//       seatNumber: 2,
-//       active: true,
-//       enabled: true,
-//     },
-//     {
-//       seatId: 76,
-//       row: 'C',
-//       seatNumber: 3,
-//       active: false,
-//       enabled: true,
-//     },
-//     {
-//       seatId: 77,
-//       row: 'C',
-//       seatNumber: 4,
-//       active: false,
-//       enabled: true,
-//     },
-//   ],
-//   [
-//     {
-//       seatId: 78,
-//       row: 'D',
-//       seatNumber: 1,
-//       active: true,
-//       enabled: true,
-//     },
-//     {
-//       seatId: 79,
-//       row: 'D',
-//       seatNumber: 2,
-//       active: false,
-//       enabled: false,
-//     },
-//     {
-//       seatId: 80,
-//       row: 'D',
-//       seatNumber: 3,
-//       active: false,
-//       enabled: false,
-//     },
-//     {
-//       seatId: 81,
-//       row: 'D',
-//       seatNumber: 4,
-//       active: false,
-//       enabled: false,
-//     },
-//   ],
-// ];
+onMounted(async () => {
+  bookingStore.setData(
+    bookingStore.book.programName,
+    bookingStore.book.programId,
+    bookingStore.book.timesId,
+    bookingStore.book.sectionId
+  );
+  await bookingStore.getSeatLists();
+});
 
 const clickSeat = (e, seatInfo) => {
   const seat = e.target;
 
-  if (seat.classList.contains('seat') && !seat.classList.contains('occupied')) {
+  if (
+    seat.classList.contains('seat') &&
+    !seat.classList.contains('occupied') &&
+    !seat.classList.contains('inactive')
+  ) {
     if (selectedSeat.value) {
       selectedSeat.value.classList.remove('selected');
     }

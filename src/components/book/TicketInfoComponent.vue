@@ -12,13 +12,15 @@
         class="select_tit select_t txt_prod_name"
         title="2024（G）I－DLE WORLD TOUR［iDOL］IN SEOUL"
       >
-        2024（G）I－DLE WORLD TOUR［iDOL］IN SEOUL
+        {{ reservation.programInfo }}
       </h3>
       <div class="box_ticket">
         <ul class="box_ticket_list">
-          <li class="nth nth1 txt_prod_schedule">2024.08.03(토) 18:00</li>
+          <li class="nth nth1 txt_prod_schedule">
+            {{ formatDateTime(reservation.date) }}
+          </li>
           <li class="nth nth2 txt_ticket_info">
-            총 1석 선택<br />지정석 2 층 30 구역 6 열 13 번
+            총 1석 선택<br />{{ reservation.seatInfo }}
           </li>
         </ul>
       </div>
@@ -30,19 +32,24 @@
           <p class="tk_b">
             <span class="tk_tit">티켓금액</span
             ><span class="pay pay_comp"
-              ><span id="ticketPriceTotal">154,000</span>원</span
+              ><span id="ticketPriceTotal">{{ formatNumber(178000) }}</span
+              >원</span
             >
           </p>
           <ul class="list_tkpay">
             <li>
               <span class="tk_tit">기본가</span>
               <span class="pay">
-                <span id="basePriceTotal">154,000</span>원</span
+                <span id="basePriceTotal">{{ formatNumber(178000) }}</span
+                >원</span
               >
             </li>
             <li>
               <span class="tk_tit">포인트</span
-              ><span class="pay"><span id="dcPriceTotal">- 2,000</span>원</span>
+              ><span class="pay"
+                ><span id="dcPriceTotal">- {{ point }}</span
+                >원</span
+              >
             </li>
             <li>
               <span class="tk_tit tk_tit_b">예매수수료</span>
@@ -55,7 +62,10 @@
         <div class="box_total_inner box_result">
           <span class="tk_tit tot_tit">총 결제금액</span>
           <strong class="pay tot_pay">
-            <span id="paymentAmount">156,000</span>원
+            <span id="paymentAmount">{{
+              formatNumber(178000 - point + 4000)
+            }}</span
+            >원
           </strong>
         </div>
       </div>
@@ -65,35 +75,39 @@
         <ul class="dotlist1x1 one_list">
           <li>
             취소기한 :
-            <span class="txt_og txt_cancel_close_dt"
-              >2024년 8월 2일(금) 17:00 까지</span
+            <span class="txt_og txt_cancel_close_dt">
+              {{ formatRefundStringDate(reservation.date) }}
+              17:00 까지</span
             >
           </li>
           <li>
             취소수수료 :
-            <span class="txt_og txt_cancel_fee_info">티켓금액의 0~30%</span>
+            <span class="txt_og txt_cancel_fee_info">티켓금액의 30%</span>
           </li>
         </ul>
       </div>
-
       <div class="btn_onestop">
-        <span class="button btWhite frt"
-          ><a href="javascript: goBack();" class="btnOne">
+        <div class="button btWhite frt">
+          <a class="btnOne">
             <div class="btn_click">이전</div>
-          </a></span
-        >
-        <span class="button btNext on"
-          ><a href="#" id="nextPayment" class="btnOne">
+          </a>
+        </div>
+        <div :class="['button', 'btNext on', { invalid: !isValid }]">
+          <a id="nextPayment" class="btnOne">
             <div class="btn_click">다음</div>
-          </a></span
-        >
+          </a>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-export default {};
+<script setup>
+import { formatDateTime, formatRefundStringDate } from '@/utils/formatDate';
+import { formatNumber } from '@/utils/formatPrice';
+import { defineProps } from 'vue';
+
+defineProps(['reservation', 'point', 'isValid']);
 </script>
 
 <style scoped>
@@ -326,6 +340,20 @@ strong {
   border: none;
   background: #41d26b;
 }
+
+.btn_onestop .button.btNext.on.invalid a {
+  border: 1px solid #888;
+  background: #888;
+  pointer-events: none; /* 클릭 이벤트를 비활성화 */
+  cursor: not-allowed;
+}
+
+.btn_onestop .button.btNext.on.invalid {
+  border: 1px solid #888;
+  background: #888;
+  cursor: not-allowed;
+}
+
 .btn_onestop .button.btNext {
   border: 1px solid #888;
   background: #888;

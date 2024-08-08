@@ -5,11 +5,7 @@
       <div class="location_step">
         <ul class="list_step">
           <li class="step">
-            <a
-              href="/reservation/popup/stepBlock.htm"
-              class="btn_o_menu btn_o_menu01"
-              >좌석선택</a
-            >
+            <a class="btn_o_menu btn_o_menu01">좌석선택</a>
           </li>
           <li class="step">
             <a href="javascript:;" class="btn_o_menu btn_o_menu02 on"
@@ -26,12 +22,7 @@
           <h3 class="select_tit">티켓가격을 선택하세요</h3>
           <div id="partTicketType" class="box_cont box_ticket">
             <h4>
-              <strong class="tit_ticket">지정석</strong
-              ><span class="txt"
-                ><span class="txt_seat_grade_tot" style="display: "
-                  ><span id="seatGrade10015_tot">1</span>매중 </span
-                ><em id="seatGrade10015_sel">1</em>매 선택</span
-              >
+              <strong class="tit_ticket">지정석</strong>
             </h4>
             <div class="list_ticket DP0020">
               <div class="box_ticket_t on">
@@ -39,17 +30,8 @@
                   <div>
                     <dl>
                       <dt class="tit_tk base_pr">기본가</dt>
-                      <dd class="price price_sale_r txt_bd">154,000원</dd>
-                      <dd class="price wrap_sel">
-                        <select
-                          id="volume_10015_10067"
-                          name="volume_10015_10067"
-                          class="sel_cate selectSeatGrade selectSeatGrade_10015 selectDcType_DP0020_null_null"
-                          onchange="sltTicket(this, '10015', '10067', '지정석');"
-                        >
-                          <option value="0">0매</option>
-                          <option value="1">1매</option>
-                        </select>
+                      <dd class="price price_sale_r txt_bd">
+                        {{ formatNumber(178000) }}원
                       </dd>
                     </dl>
                   </div>
@@ -60,11 +42,14 @@
                   <div>
                     <dl>
                       <dt class="tit_tk base_pr">포인트</dt>
-                      <dd class="price price_sale_r txt_bd">4,000원</dd>
+                      <dd class="price price_sale_r txt_bd">
+                        {{ bookingStore.reservation.myPoint }}원
+                      </dd>
                       <dd class="price wrap_sel">
                         <input
                           type="text"
                           class="sel_cate selectSeatGrade selectSeatGrade_10015 selectDcType_DP0020_null_null"
+                          v-model="inputPoint"
                         />
                       </dd>
                     </dl>
@@ -87,7 +72,6 @@
                     id="payMethodCode001"
                     name="payMethodCode"
                     value="AP0001"
-                    onclick="setPayMethodCode(this);"
                     title="신용카드"
                     class="radio_pay_metohd_code"
                   />
@@ -105,7 +89,6 @@
                     id="payMethodCode003"
                     name="payMethodCode"
                     value="AP0003"
-                    onclick="setPayMethodCode(this);"
                     title="무통장입금"
                     class="radio_pay_metohd_code"
                     disabled=""
@@ -125,7 +108,6 @@
                     id="payMethodCode002"
                     name="payMethodCode"
                     value="AP0002"
-                    onclick="setPayMethodCode(this);"
                     title="휴대폰 결제"
                     class="radio_pay_metohd_code"
                     disabled=""
@@ -160,7 +142,6 @@
                             <select
                               id="cardCode"
                               name="cardCode"
-                              onchange="setCardContent(this.value);"
                               class="sel_cate"
                             >
                               <option value="" selected="selected">
@@ -186,32 +167,6 @@
                               <option value="KDB">KDB산업은행카드</option>
                               <option value="JEJU">제주카드</option>
                             </select>
-                            <input
-                              type="hidden"
-                              id="cardCodeName"
-                              name="cardCodeName"
-                            />
-                            <input
-                              type="hidden"
-                              id="kcpCardBpId"
-                              name="kcpCardBpId"
-                            />
-                            <input
-                              type="hidden"
-                              id="cardBpIssueCode"
-                              name="cardBpIssueCode"
-                            />
-                            <input
-                              type="hidden"
-                              id="autheTypeCode"
-                              name="autheTypeCode"
-                            />
-                            <input
-                              type="hidden"
-                              id="cardQuota"
-                              name="cardQuota"
-                              value="12"
-                            />
                           </div>
                         </div>
                       </td>
@@ -247,15 +202,6 @@
                           </div>
                         </div>
                       </td>
-                      <td>
-                        <a
-                          href="#none"
-                          class="btn_flexible btn_arr_down"
-                          onclick="$('#chargeSale').show(); return false;"
-                        >
-                          <span>무이자</span>
-                        </a>
-                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -283,6 +229,8 @@
                       id="chkAgreeAll"
                       name="chkAgreeAll"
                       title="전체 동의합니다."
+                      v-model="allAgree"
+                      @change="toggleAll"
                     />
                     <label for="chkAgreeAll"
                       ><span class="txt_lab">전체동의</span></label
@@ -296,6 +244,8 @@
                     type="checkbox"
                     id="chkAgree01"
                     name="chkAgree"
+                    v-model="requiredItems[0].checked"
+                    @change="checkRequired"
                     title="[필수] 예매 및 취소 수수료/ 취소기한을 확인하였으며 동의합니다."
                   />
                   <label for="chkAgree01"
@@ -347,6 +297,8 @@
                         type="checkbox"
                         id="chkAgree05"
                         name="chkAgree"
+                        v-model="requiredItems[1].checked"
+                        @change="checkRequired"
                         title="[필수] 결제대행 서비스 표준이용약관"
                       />
                       <label for="chkAgree05"
@@ -366,6 +318,8 @@
                         type="checkbox"
                         id="chkAgree_kakao"
                         name="chkAgree"
+                        v-model="requiredItems[2].checked"
+                        @change="checkRequired"
                         title="[필수] 카카오 전자금융 이용약관 동의"
                       />
                       <label for="chkAgree_kakao"
@@ -377,7 +331,7 @@
                   </li>
                 </ul>
               </li>
-              <li class="list_agree agree_terms_approval" style="">
+              <li class="list_agree agree_terms_approval">
                 <ul>
                   <li>
                     <div class="tit_check">
@@ -385,6 +339,8 @@
                         type="checkbox"
                         id="chkAgree03"
                         name="chkAgree"
+                        v-model="requiredItems[3].checked"
+                        @change="checkRequired"
                         title="[필수] 개인정보 수집/이용에 동의합니다."
                       />
                       <label
@@ -404,6 +360,8 @@
                         type="checkbox"
                         id="chkAgree04"
                         name="chkAgree"
+                        v-model="requiredItems[4].checked"
+                        @change="checkRequired"
                         title="[필수] 개인정보 제3자 제공 동의 및 주의사항"
                       />
                       <label for="chkAgree04"
@@ -415,7 +373,7 @@
                   </li>
                 </ul>
               </li>
-              <li class="list_agree" id="melonAgree" style="">
+              <li class="list_agree" id="melonAgree">
                 <ul>
                   <li>
                     <div class="tit_check">
@@ -423,6 +381,8 @@
                         type="checkbox"
                         id="chkAgree02"
                         name="chkAgree"
+                        v-model="requiredItems[5].checked"
+                        @change="checkRequired"
                         title="[필수] 멜론티켓 이용약관 동의합니다."
                       />
                       <label
@@ -439,12 +399,53 @@
         </form>
       </div>
     </div>
-    <TicketInfoComponent />
+    <TicketInfoComponent
+      :reservation="bookingStore.reservation"
+      :point="inputPoint"
+      :isValid="isNextStepEnabled"
+    />
   </div>
 </template>
 
 <script setup>
+import { onMounted, ref, computed } from 'vue';
 import TicketInfoComponent from './TicketInfoComponent.vue';
+import { useBookingStore } from '@/stores/useBookingStore';
+import { formatNumber } from '@/utils/formatPrice';
+
+const bookingStore = useBookingStore();
+
+const inputPoint = ref(0);
+const allAgree = ref(false);
+
+onMounted(async () => {
+  await bookingStore.getReservation();
+});
+
+const isNextStepEnabled = computed(() => {
+  return requiredItems.value.every((item) => item.checked);
+});
+
+const requiredItems = ref([
+  {
+    checked: false,
+  },
+  { checked: false },
+  { checked: false },
+  { checked: false },
+  { checked: false },
+  { checked: false },
+]);
+
+const checkRequired = () => {
+  allAgree.value = requiredItems.value.every((item) => item.checked);
+};
+
+const toggleAll = () => {
+  const isChecked = allAgree.value;
+
+  requiredItems.value.forEach((item) => (item.checked = isChecked));
+};
 </script>
 
 <style scoped>
@@ -830,5 +831,10 @@ dd {
 }
 .box_receipt .box_agree .list_agree .tit_check {
   line-height: 40px;
+}
+
+input[type='checkbox'] {
+  appearance: auto;
+  margin-right: 10px;
 }
 </style>
