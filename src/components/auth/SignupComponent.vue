@@ -1476,7 +1476,7 @@ select {
 }
 
 .header .headerLogo {
-  background: url(//openimage.interpark.com/member/common/logo_interpark.svg) 0
+  background: url(https://daqu2024-s3.s3.ap-northeast-2.amazonaws.com/tiggle.png) 0
     0 no-repeat;
   background-size: 100% auto;
   position: absolute;
