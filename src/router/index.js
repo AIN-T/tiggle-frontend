@@ -12,7 +12,7 @@ import SignupComponent from "@/components/auth/SignupComponent.vue";
 import ReservationPage from "@/pages/ReservationPage.vue";
 import DeatilProgramPage from "@/pages/DeatilProgramPage.vue";
 
-const requireLogin = async (from, to, next) => {
+const requireLogin = async (to, from, next) => {
   const memberStore = useMemberStore();
 
   await memberStore.verify();
@@ -23,7 +23,7 @@ const requireLogin = async (from, to, next) => {
 
   next({
     path: "/login",
-    query: { redirect: from.fullPath },
+    query: { redirect: to.fullPath },
   });
 };
 

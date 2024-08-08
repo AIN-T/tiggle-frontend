@@ -21,19 +21,28 @@
               <tbody>
                 <tr>
                   <th class="txt_gray frt">예매번호</th>
-                  <td class="frt" id="txtRsrvNo">M247190855</td>
+                  <td class="frt" id="txtRsrvNo">
+                    {{ programStore.myReservation.ticketNumber }}
+                  </td>
                 </tr>
                 <tr>
                   <th class="txt_gray">공연명</th>
-                  <td id="txtProdName">뮤지컬 〈베르사유의 장미〉</td>
+                  <td id="txtProdName">
+                    {{ programStore.myReservation.programName }}
+                  </td>
                 </tr>
                 <tr>
                   <th class="txt_gray">공연장</th>
-                  <td id="txtPlaceName">충무아트센터</td>
+                  <td id="txtPlaceName">
+                    {{ programStore.myReservation.locationName }}
+                  </td>
                 </tr>
                 <tr>
                   <th class="txt_gray">좌석</th>
-                  <td class="view" id="txtProdSeat">VIP석 1층 15열 28번</td>
+                  <td class="view" id="txtProdSeat">
+                    {{ programStore.myReservation.gradeName }}석
+                    {{ programStore.myReservation.seatInfo }}
+                  </td>
                 </tr>
                 <tr>
                   <th class="txt_gray">수령방법</th>
@@ -48,41 +57,49 @@
                 <tr>
                   <th class="txt_gray">결제수단</th>
                   <td id="txtPayMethod">
-                    신용카드 (국민)
-                    <div class="payment">
-                      <p>- 계좌번호 : 50529073999851</p>
-                      <p>
-                        - 입금마감시간 :
-                        <span style="color: red">2024년 8월 2일 23시 59분</span>
-                      </p>
-                      <p>- 예금주명 : 멜론티켓</p>
-                    </div>
+                    {{ programStore.myReservation.payType }}
                   </td>
                 </tr>
                 <tr>
                   <th class="txt_gray">취소가능일시</th>
-                  <td id="txtFinalCancelDate">2024년 8월 8일 17시 00분 까지</td>
+                  <td id="txtFinalCancelDate">
+                    {{
+                      formatRefundStringDate(programStore.myReservation.date)
+                    }}
+                    17시 00분 까지
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
+        <div class="box_success successBtn">
+          <button @click="popupClose">완료</button>
+        </div>
       </div>
     </div>
-
-    <!-- 버튼: 닫기 and 예매내역 확인으로 수정 -->
-    <TicketInfoComponent />
+    <!-- <TicketInfoComponent :isValid="true" /> -->
   </div>
 </template>
 
-<script>
-import TicketInfoComponent from '../book/TicketInfoComponent.vue';
+<script setup>
+import { useProgramsStore } from '@/stores/useProgramsStore';
+import { useBookingStore } from '@/stores/useBookingStore';
 
-export default {
-  name: 'PurchaseSuccessComponent',
-  components: {
-    TicketInfoComponent,
-  },
+const programStore = useProgramsStore();
+
+const bookingStore = useBookingStore();
+
+onMounted(async () => {
+  await programStore.getMyReservation(bookingStore.reservationId);
+});
+
+// import TicketInfoComponent from '../book/TicketInfoComponent.vue';
+import { onMounted } from 'vue';
+import { formatRefundStringDate } from '@/utils/formatDate';
+
+const popupClose = () => {
+  window.close();
 };
 </script>
 
@@ -193,5 +210,16 @@ export default {
   color: #666;
   text-align: center;
   vertical-align: top;
+}
+
+.wrap_reserve .box_success.successBtn button {
+  margin-top: 10px;
+  background: #41d26b;
+  border: 1px solid #41d26b;
+  width: 118px;
+  height: 48px;
+  color: #eee;
+  font-weight: 700;
+  font-size: 16px;
 }
 </style>
