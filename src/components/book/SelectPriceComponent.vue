@@ -59,7 +59,6 @@
             </div>
           </div>
         </div>
-
         <form id="dForm" method="post" name="dForm">
           <!-- 결제수단 선택-->
           <div id="partPaymentInfo" class="box_payment" style="">
@@ -408,7 +407,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed } from 'vue';
+import { onMounted, ref, computed, watch } from 'vue';
 import TicketInfoComponent from './TicketInfoComponent.vue';
 import { useBookingStore } from '@/stores/useBookingStore';
 import { formatNumber } from '@/utils/formatPrice';
@@ -420,6 +419,13 @@ const allAgree = ref(false);
 
 onMounted(async () => {
   await bookingStore.getReservation();
+});
+
+watch(inputPoint, (newValue) => {
+  const maxPoint = parseInt(bookingStore.reservation.myPoint);
+  if (newValue >= maxPoint) {
+    inputPoint.value = maxPoint;
+  }
 });
 
 const isNextStepEnabled = computed(() => {
