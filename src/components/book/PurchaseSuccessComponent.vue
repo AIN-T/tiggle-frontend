@@ -33,16 +33,7 @@
                 </tr>
                 <tr>
                   <th class="txt_gray">좌석</th>
-                  <td class="view" id="txtProdSeat">
-                    VIP석 1층 15열 28번
-                    <div class="btn_view">
-                      <a
-                        href="javascript: popRsrvSeatCheck('2024080107889918', '82c51f7f4f9174cb973651e73fe44a0e9679e8000860b4253ce2a5b832f6f6df', '뮤지컬 〈베르사유의 장미〉');"
-                        class="btn_flexible btn_arr"
-                        ><span>좌석위치보기</span></a
-                      >
-                    </div>
-                  </td>
+                  <td class="view" id="txtProdSeat">VIP석 1층 15열 28번</td>
                 </tr>
                 <tr>
                   <th class="txt_gray">수령방법</th>
