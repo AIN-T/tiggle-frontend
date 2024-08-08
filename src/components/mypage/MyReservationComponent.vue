@@ -9,7 +9,7 @@
       <td>
         <div class="movie_infor">
           <div class="thumb_90x125 img">
-            <a href="javascript:goRsrvDetail('S', '2024080107889918');">
+            <a>
               <img :src="reservation.imageFiles[0]" width="90" alt="" />
               <span class="frame"></span>
             </a>
@@ -19,9 +19,7 @@
               >좌석우위</span
             >
             <span class="movie_title"
-              ><a href="javascript:goRsrvDetail('S', '2024080107889918');">{{
-                reservation.programName
-              }}</a></span
+              ><a>{{ reservation.programName }}</a></span
             >
             <span class="movie_date">
               {{ formatDate(reservation.programStartDate) }} ~
@@ -77,12 +75,10 @@
 import { defineProps } from 'vue';
 import { formatDate, formatDateTime } from '@/utils/formatDate';
 
-// props 정의
 defineProps(['reservation']);
 
-// 팝업창 열기 함수
 const openPopup = () => {
-  const popUrl = '/seat'; // 팝업창에 출력될 페이지 URL
+  const popUrl = '/seat';
   const popOption =
     'width=986, height=682, resizable=no, scrollbars=no, status=no;'; // 팝업창 옵션
   window.open(popUrl, '', popOption);
