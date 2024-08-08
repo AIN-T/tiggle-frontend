@@ -18,7 +18,9 @@
                 <span class="frame_100_100_radius"></span>
               </div>
               <div class="info_text">
-                <span class="person_id">차윤슬님</span>
+                <span class="person_id"
+                  >{{ myHeaderStore.myHeaderInfo.username }}님</span
+                >
                 <span class="person_btn">
                   <a target="_blank" class="btn_line">기본정보 관리</a>
                 </span>
@@ -28,19 +30,23 @@
               <ul>
                 <li>
                   <p class="state_num">
-                    <a id="rsrvCnt">1</a>
+                    <a id="rsrvCnt">{{
+                      myHeaderStore.myHeaderInfo.reservationCnt
+                    }}</a>
                   </p>
                   <p class="state_title">예매내역</p>
                 </li>
                 <li class="lst">
                   <p class="state_num">
-                    <a id="advtkCnt">0</a>
+                    <a id="advtkCnt">{{
+                      myHeaderStore.myHeaderInfo.notWatchedYet
+                    }}</a>
                   </p>
                   <p class="state_title">미확인 교환요청</p>
                 </li>
                 <li>
                   <p class="state_num">
-                    <a id="couponCnt">4,000</a>
+                    <a id="couponCnt">{{ myHeaderStore.myHeaderInfo.point }}</a>
                   </p>
                   <p class="state_title">보유 포인트</p>
                 </li>
@@ -152,10 +158,12 @@ import { useRouter } from "vue-router";
 import MyReservationComponent from "./MyReservationComponent.vue";
 import MyPointComponent from "./MyPointComponent.vue";
 import { usePointStore } from "@/stores/usePointStore";
+import { useMyHeaderStore } from "@/stores/useMyHeaderStore";
 
 const exchangeListStore = useExchangeListStore();
 const programStore = useProgramsStore();
 const pointStore = usePointStore();
+const myHeaderStore = useMyHeaderStore();
 const router = useRouter();
 
 // 컴포넌트가 마운트될 때 데이터 가져오기
@@ -164,6 +172,7 @@ onMounted(async () => {
   await exchangeListStore.getData(0);
   await programStore.getMyReservations();
   await pointStore.getPointData(); // reqType을 매개변수로 전달할 필요 없음
+  await myHeaderStore.getMyHeader();
 });
 
 // 숫자 포맷팅 함수
