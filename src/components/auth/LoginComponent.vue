@@ -282,7 +282,8 @@ input[type='search']::-webkit-search-results-decoration {
   display: inline-block;
   width: 15.6rem;
   height: 4.2rem;
-  background: url(../../assets/tiguri.png) 0 0 no-repeat;
+  background: url(https://daqu2024-s3.s3.ap-northeast-2.amazonaws.com/tiggle.png)
+    0 0 no-repeat;
   background-size: 100%;
 }
 .loginLogo h1 span {

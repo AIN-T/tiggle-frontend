@@ -37,7 +37,7 @@
         <h1 id="logo">
           <router-link to="/">
             <img
-              src="https://cdnticket.melon.co.kr/resource/image/web/common/logo.png"
+              src="https://daqu2024-s3.s3.ap-northeast-2.amazonaws.com/tiggle.png"
             />
           </router-link>
         </h1>
