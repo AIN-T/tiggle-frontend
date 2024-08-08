@@ -48,9 +48,12 @@ export const useProgramsStore = defineStore('programs', {
 
     async getMyReservations() {
       try {
-        const response = await axios.get('/api/reservation/myRead', {
-          withCredentials: true,
-        });
+        const response = await axios.get(
+          '/api/reservation/myRead?page=0&size=4',
+          {
+            withCredentials: true,
+          }
+        );
 
         this.myReservations = response.data.result;
       } catch (error) {
