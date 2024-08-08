@@ -7,7 +7,7 @@
           좌석 선택<span
             class="tit_s txt_prod_name"
             title="2024（G）I－DLE WORLD TOUR［iDOL］IN SEOUL"
-            >2024（G）I－DLE WORLD TOUR［iDOL］IN SEOUL</span
+            >{{ bookingStore.book.programName }}</span
           >
           <span class="seat_wrap_sel">
             <!-- 셀렉트박스 -->
@@ -31,8 +31,9 @@
           <!-- 구역설명-->
           <div class="stage"><span>무대방향 (STAGE)</span></div>
           <div class="txt_stage">
-            현재 보고 계신 구역은 <span class="area">2 층</span>
-            <span id="areaName">25 구역</span>입니다.
+            현재 보고 계신 구역은
+            <span id="areaName">{{ bookingStore.book.sectionId }}구역</span
+            >입니다.
           </div>
         </div>
         <div class="stage_img">
@@ -158,15 +159,12 @@
           </div>
         </div>
       </div>
-      <div class="box_info_bm">
+      <div class="box_info_bm" @click="next">
         <div class="btn_onestop">
           <span class="button btNext"
-            ><router-link
-              id="nextTicketSelection"
-              class="btnOne btnOneB"
-              to="/price"
-              >좌석 선택 완료<em class="one_arr next_ar">다음</em></router-link
-            ></span
+            ><div id="nextTicketSelection" class="btnOne btnOneB" to="/price">
+              좌석 선택 완료<em class="one_arr next_ar">다음</em>
+            </div></span
           >
         </div>
       </div>
@@ -178,7 +176,6 @@
 import { ref } from 'vue';
 import SeatComponent from '../book/SeatComponent.vue';
 import { useBookingStore } from '@/stores/useBookingStore';
-import { watch } from 'vue';
 
 const selectedSeat = ref(null);
 
@@ -202,23 +199,15 @@ const getData = (seatInfo) => {
   selectedSeat.value = seatInfo;
 };
 
-const store = useBookingStore();
+const bookingStore = useBookingStore();
 
-watch(
-  () => [store.book.programId, store.book.timesId, store.book.sectionId],
-  (
-    [newProgramId, newTimesId, newSectionId],
-    [oldProgramId, oldTimesId, oldSectionId]
-  ) => {
-    if (
-      newProgramId !== oldProgramId ||
-      newTimesId !== oldTimesId ||
-      newSectionId !== oldSectionId
-    ) {
-      store.getSeatLists(newProgramId, newTimesId, newSectionId);
-    }
-  }
-);
+const next = () => {
+  bookingStore.setSeat(
+    bookingStore.book.programId,
+    bookingStore.book.timesId,
+    selectedSeat.value.seatId
+  );
+};
 </script>
 
 <style scoped>
