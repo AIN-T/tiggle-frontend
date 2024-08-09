@@ -64,8 +64,8 @@
       <h2 class="logo_onestop">
         <a href="#none"
           ><img
-            src="https://cdnticket.melon.co.kr/resource/image/web/onestop/logo_onestop.png"
-            alt="Melon 티켓"
+            src="https://daqu2024-s3.s3.ap-northeast-2.amazonaws.com/tiggle.png"
+            alt="TIGGLE"
         /></a>
       </h2>
       <div class="wrap_seat_list">
@@ -173,26 +173,26 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import SeatComponent from '../book/SeatComponent.vue';
-import { useBookingStore } from '@/stores/useBookingStore';
+import { ref } from "vue";
+import SeatComponent from "../book/SeatComponent.vue";
+import { useBookingStore } from "@/stores/useBookingStore";
 
 const selectedSeat = ref(null);
 
 // 좌석 리스트 상태 정의
 const seatList = ref([
-  { floor: 1, section: 'A', seat: 0 },
-  { floor: 1, section: 'B', seat: 0 },
-  { floor: 1, section: 'C', seat: 0 },
-  { floor: 1, section: 'D', seat: 1 },
-  { floor: 1, section: 'E', seat: 0 },
-  { floor: 1, section: 'F', seat: 0 },
-  { floor: 2, section: 'A', seat: 2 },
-  { floor: 2, section: 'B', seat: 0 },
-  { floor: 2, section: 'C', seat: 0 },
-  { floor: 2, section: 'D', seat: 3 },
-  { floor: 2, section: 'E', seat: 1 },
-  { floor: 2, section: 'F', seat: 0 },
+  { floor: 1, section: "A", seat: 0 },
+  { floor: 1, section: "B", seat: 0 },
+  { floor: 1, section: "C", seat: 0 },
+  { floor: 1, section: "D", seat: 1 },
+  { floor: 1, section: "E", seat: 0 },
+  { floor: 1, section: "F", seat: 0 },
+  { floor: 2, section: "A", seat: 2 },
+  { floor: 2, section: "B", seat: 0 },
+  { floor: 2, section: "C", seat: 0 },
+  { floor: 2, section: "D", seat: 3 },
+  { floor: 2, section: "E", seat: 1 },
+  { floor: 2, section: "F", seat: 0 },
 ]);
 
 const getData = (seatInfo) => {
@@ -243,7 +243,7 @@ const next = () => {
   position: relative;
 }
 .section_onestop:after {
-  content: '';
+  content: "";
   display: block;
   clear: both;
 }
@@ -268,7 +268,7 @@ const next = () => {
 .select_tit {
   padding-bottom: 6px;
   font-weight: 700;
-  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic',
+  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic",
     sans-serif;
   font-size: 16px;
   color: #333;
@@ -379,7 +379,7 @@ const next = () => {
 .box_seat_top .tit_seat {
   position: relative;
   padding: 11px 0 0 28px;
-  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic',
+  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic",
     sans-serif;
   font-size: 16px;
   color: #404040;
@@ -431,7 +431,7 @@ const next = () => {
   background-color: #c8c8c8;
 }
 .wrap_seat .box_stage .stage span {
-  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic',
+  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic",
     sans-serif;
   font-size: 16px;
   color: #fff;
@@ -452,7 +452,7 @@ const next = () => {
 .seat_box .seat_btn {
   height: 35px;
   padding: 0 10px 0 30px;
-  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic',
+  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic",
     sans-serif;
   font-size: 16px;
   color: #fff;
@@ -841,8 +841,8 @@ const next = () => {
 .btn_flexible_ico2 span {
   background-position: right -130px;
   color: #666;
-  font-family: AppleSDGothicNeo-Regular, '돋움', Dotum, '맑은 고딕',
-    'Malgun Gothic', 'Apple Gothic', sans-serif;
+  font-family: AppleSDGothicNeo-Regular, "돋움", Dotum, "맑은 고딕",
+    "Malgun Gothic", "Apple Gothic", sans-serif;
 }
 .btn_flexible_ico1 span,
 .btn_flexible_ico2 span,
