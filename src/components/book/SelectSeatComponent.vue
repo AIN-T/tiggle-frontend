@@ -32,7 +32,7 @@
           <div class="stage"><span>무대방향 (STAGE)</span></div>
           <div class="txt_stage">
             현재 보고 계신 구역은
-            <span id="areaName">{{ bookingStore.book.sectionId }}구역</span
+            <span id="areaName">{{ selectedSection.sectionName }}구역</span
             >입니다.
           </div>
         </div>
@@ -71,11 +71,7 @@
       <div class="wrap_seat_list">
         <div class="seat_list">
           <h3 class="select_tit">
-            좌석등급/잔여석<span
-              class="ico_info"
-              onmouseover="toolTip('layer_ticket');"
-              >유의사항</span
-            ><a
+            좌석등급/잔여석<a
               href="#none"
               id="btnReloadSchedule"
               class="btn_flexible btn_flexible_ico2 btn_detail"
@@ -94,28 +90,22 @@
                   <col style="width: 22px" />
                 </colgroup>
                 <tbody id="divGradeSummary">
-                  <tr id="gd10015">
-                    <th class="seat_color open">
-                      <em
-                        class="seat_color seat_vip"
-                        style="background-color: #bea886"
-                      ></em>
-                    </th>
-                    <td class="seat_name open">지정석</td>
-                    <td class="price open">154,000원</td>
-                    <td class="seat_remain open"></td>
-                    <td class="area_info open">좌석보기</td>
-                  </tr>
                   <tr class="box_list_area">
                     <td colspan="5">
                       <div class="list_area listOn">
                         <ul>
-                          <li v-for="seat in seatList" :key="seat.idx">
+                          <li
+                            class="seat_name open"
+                            v-for="section in bookingStore.sections"
+                            :key="section.idx"
+                            :class="{
+                              selected: selectedSection.id === section.id,
+                            }"
+                            @click="selectSection(section)"
+                          >
                             <span class="area_tit"
-                              >{{ seat.floor }} 층 {{ seat.section }} 구역</span
-                            ><span class="seat_residual">
-                              <strong>{{ seat.seat }}</strong
-                              >석</span
+                              >{{ section.gradeName }} 석
+                              {{ section.sectionName }} 구역</span
                             >
                           </li>
                         </ul>
@@ -154,7 +144,11 @@
           <div class="select_seat_info">
             <div class="select_seat_title">선택 좌석</div>
             <div class="select_seat_price" v-if="selectedSeat != null">
-              1구역 {{ selectedSeat.row }}열 {{ selectedSeat.seatNumber }}번
+              {{ selectedSection.sectionName }}구역 {{ selectedSeat.row }}열
+              {{ selectedSeat.seatNumber }}번
+              <span class="little"
+                >{{ formatNumber(selectedSection.price) }}원</span
+              >
             </div>
           </div>
         </div>
@@ -173,44 +167,51 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import SeatComponent from '../book/SeatComponent.vue';
 import { useBookingStore } from '@/stores/useBookingStore';
+import { formatNumber } from '@/utils/formatPrice';
 
+const bookingStore = useBookingStore();
 const selectedSeat = ref(null);
+const selectedSection = ref(bookingStore.sections[0]);
 
-// 좌석 리스트 상태 정의
-const seatList = ref([
-  { floor: 1, section: 'A', seat: 0 },
-  { floor: 1, section: 'B', seat: 0 },
-  { floor: 1, section: 'C', seat: 0 },
-  { floor: 1, section: 'D', seat: 1 },
-  { floor: 1, section: 'E', seat: 0 },
-  { floor: 1, section: 'F', seat: 0 },
-  { floor: 2, section: 'A', seat: 2 },
-  { floor: 2, section: 'B', seat: 0 },
-  { floor: 2, section: 'C', seat: 0 },
-  { floor: 2, section: 'D', seat: 3 },
-  { floor: 2, section: 'E', seat: 1 },
-  { floor: 2, section: 'F', seat: 0 },
-]);
+onMounted(async () => {
+  await bookingStore.getSection();
+});
+
+const selectSection = (section) => {
+  selectedSection.value = section;
+
+  bookingStore.setSection(section.id);
+};
 
 const getData = (seatInfo) => {
   selectedSeat.value = seatInfo;
 };
 
-const bookingStore = useBookingStore();
-
 const next = () => {
   bookingStore.setSeat(
     bookingStore.book.programId,
     bookingStore.book.timesId,
-    selectedSeat.value.seatId
+    selectedSeat.value.seatId,
+    selectedSection.value.price
   );
 };
 </script>
 
 <style scoped>
+.little {
+  font-weight: 500;
+  font-size: 14px;
+  margin-left: 5px;
+}
+
+.selected {
+  background-color: #f0f0f0; /* 선택된 항목의 배경색 */
+  font-weight: bold; /* 선택된 항목의 글씨 굵기 */
+}
+
 #wrapper {
   position: absolute;
   overflow: hidden;
