@@ -223,7 +223,6 @@
                     </li>
                   </ul>
                 </div>
-
                 <div class="box_img_content" v-if="programsStore.program">
                   <p class="tit_sub_float">작품설명</p>
                   <img
@@ -322,16 +321,17 @@ const openPopup = () => {
     alert("회차를 선택해주세요.");
     return;
   }
+
   const programId = route.params.id;
   const timesId = selectedRound.value.id;
 
   bookingStore.setData(
+    programsStore.program.locationId,
     programsStore.program.programName,
     programId,
     timesId,
     1
   );
-  // localStorage.setItem('bookingData', JSON.stringify(bookingStore.book));
 
   const popUrl = "/seat";
   const popOption =

@@ -32,7 +32,7 @@
           <p class="tk_b">
             <span class="tk_tit">티켓금액</span
             ><span class="pay pay_comp"
-              ><span id="ticketPriceTotal">{{ formatNumber(178000) }}</span
+              ><span id="ticketPriceTotal">{{ formatNumber(price) }}</span
               >원</span
             >
           </p>
@@ -40,7 +40,7 @@
             <li>
               <span class="tk_tit">기본가</span>
               <span class="pay">
-                <span id="basePriceTotal">{{ formatNumber(178000) }}</span
+                <span id="basePriceTotal">{{ formatNumber(price) }}</span
                 >원</span
               >
             </li>
@@ -63,7 +63,7 @@
           <span class="tk_tit tot_tit">총 결제금액</span>
           <strong class="pay tot_pay">
             <span id="paymentAmount">{{
-              formatNumber(178000 - point + 4000)
+              formatNumber(price - point + 4000)
             }}</span
             >원
           </strong>
@@ -88,9 +88,9 @@
       </div>
       <div class="btn_onestop">
         <div class="button btWhite frt">
-          <a class="btnOne">
+          <router-link to="/seat" class="btnOne">
             <div class="btn_click">이전</div>
-          </a>
+          </router-link>
         </div>
         <div :class="['button', 'btNext on', { invalid: !isValid }]">
           <a id="nextPayment" class="btnOne">
@@ -107,7 +107,7 @@ import { formatDateTime, formatRefundStringDate } from "@/utils/formatDate";
 import { formatNumber } from "@/utils/formatPrice";
 import { defineProps } from "vue";
 
-defineProps(["reservation", "point", "isValid"]);
+defineProps(['reservation', 'point', 'isValid', 'price']);
 </script>
 
 <style scoped>

@@ -31,7 +31,7 @@
                     <dl>
                       <dt class="tit_tk base_pr">기본가</dt>
                       <dd class="price price_sale_r txt_bd">
-                        {{ formatNumber(178000) }}원
+                        {{ formatNumber(bookingStore.book.price) }}원
                       </dd>
                     </dl>
                   </div>
@@ -402,6 +402,7 @@
       :reservation="bookingStore.reservation"
       :point="inputPoint"
       :isValid="isNextStepEnabled"
+      :price="bookingStore.book.price"
     />
   </div>
 </template>

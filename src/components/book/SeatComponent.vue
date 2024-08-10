@@ -5,7 +5,9 @@
       v-for="seatList in bookingStore.book.seatLists"
       :key="seatList.idx"
     >
-      <div class="row-number">{{ seatList[0].row }}</div>
+      <div class="row-number" v-if="seatList.length > 0">
+        {{ seatList[0].row }}
+      </div>
       <div
         @click="clickSeat($event, seat)"
         v-for="seat in seatList"
@@ -21,7 +23,7 @@
 </template>
 
 <script setup>
-import { ref, defineEmits, onMounted } from 'vue';
+import { ref, defineEmits, onMounted, watch } from 'vue';
 import { useBookingStore } from '@/stores/useBookingStore';
 
 const emit = defineEmits(['seatInfo']);
@@ -31,14 +33,28 @@ const selectedSeat = ref(null);
 const selectedSeatInfo = ref(null);
 
 onMounted(async () => {
-  bookingStore.setData(
-    bookingStore.book.programName,
-    bookingStore.book.programId,
-    bookingStore.book.timesId,
-    bookingStore.book.sectionId
-  );
   await bookingStore.getSeatLists();
 });
+
+watch(
+  () => bookingStore.book.sectionId,
+  async (newSectionId, oldSectionId) => {
+    if (newSectionId !== oldSectionId) {
+      resetSelectedSeat();
+      await bookingStore.getSeatLists();
+    }
+  }
+);
+
+// 섹션 클릭 시 선택된 좌석 초기화
+const resetSelectedSeat = () => {
+  if (selectedSeat.value) {
+    selectedSeat.value.classList.remove('selected');
+  }
+  selectedSeat.value = null;
+  selectedSeatInfo.value = null;
+  emit('seatInfo', selectedSeatInfo.value);
+};
 
 const clickSeat = (e, seatInfo) => {
   const seat = e.target;

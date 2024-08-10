@@ -4,11 +4,9 @@
       <!--좌석선택  영역-->
       <div class="box_seat_top">
         <h3 class="tit_seat">
-          좌석 선택<span
-            class="tit_s txt_prod_name"
-            title="2024（G）I－DLE WORLD TOUR［iDOL］IN SEOUL"
-            >{{ bookingStore.book.programName }}</span
-          >
+          좌석 선택<span class="tit_s txt_prod_name">{{
+            bookingStore.book.programName
+          }}</span>
           <span class="seat_wrap_sel">
             <!-- 셀렉트박스 -->
             <select
@@ -64,8 +62,8 @@
       <h2 class="logo_onestop">
         <a href="#none"
           ><img
-            src="https://daqu2024-s3.s3.ap-northeast-2.amazonaws.com/tiggle.png"
-            alt="TIGGLE"
+            src="https://cdnticket.melon.co.kr/resource/image/web/onestop/logo_onestop.png"
+            alt="Melon 티켓"
         /></a>
       </h2>
       <div class="wrap_seat_list">
@@ -81,14 +79,6 @@
           <div class="box_seat">
             <div class="box_seat_inner box_seat_area">
               <table class="tbl">
-                <caption class="hide"></caption>
-                <colgroup>
-                  <col style="width: 26px" />
-                  <col />
-                  <col style="width: 65px" />
-                  <col style="width: 60px" />
-                  <col style="width: 22px" />
-                </colgroup>
                 <tbody id="divGradeSummary">
                   <tr class="box_list_area">
                     <td colspan="5">
@@ -116,30 +106,71 @@
               </table>
             </div>
           </div>
-          <div
-            class="layer_ticket"
-            id="layer_ticket"
-            style="position: absolute; top: 15px; left: 0; width: 238px"
-          >
-            <div class="layer_arr" style="left: 114px"></div>
-            <div class="tk_header">
-              <div class="tk_header1">
-                <span class="tk_tit"></span>
+        </div>
+        <div class="box_seat">
+          <div class="box_seat_inner exchange_price" style="height: 160px">
+            <h3 class="select_tit" style="padding-left: 10px">결제금액</h3>
+            <div class="box_ticket">
+              <div class="box_total_inner">
+                <ul class="list_tkpay">
+                  <li>
+                    <p class="tk_b">
+                      <span class="tk_tit">내 티켓</span
+                      ><span class="pay pay_comp"
+                        ><span id="ticketPriceTotal">{{
+                          formatNumber(148000)
+                        }}</span
+                        >원</span
+                      >
+                    </p>
+                  </li>
+                  <li>
+                    <p class="tk_b">
+                      <span class="tk_tit">상대 티켓</span>
+                      <span class="pay">
+                        <span id="basePriceTotal">{{
+                          formatNumber(178000)
+                        }}</span
+                        >원</span
+                      >
+                    </p>
+                  </li>
+                  <li>
+                    <p class="tk_b">
+                      <span class="tk_tit">차액</span
+                      ><span class="pay"
+                        ><span id="dcPriceTotal">
+                          {{ formatNumber(148000 - 178000) }}</span
+                        >원</span
+                      >
+                    </p>
+                  </li>
+                  <li>
+                    <p class="tk_b">
+                      <span class="tk_tit tk_tit_b">교환수수료</span>
+                      <span class="pay pay_comp">
+                        <span id="reservationFee">{{
+                          formatNumber(148000 * 0.3)
+                        }}</span
+                        >원</span
+                      >
+                    </p>
+                  </li>
+                </ul>
+              </div>
+              <div class="box_total_inner box_result">
+                <span class="tk_tit tot_tit">총 결제금액</span>
+                <strong class="pay tot_pay">
+                  <span id="paymentAmount">{{
+                    formatNumber(178000 - 148000 + 148000 * 0.3)
+                  }}</span
+                  >원
+                </strong>
               </div>
             </div>
-            <div class="tk_middle">
-              <div class="tk_middle1">
-                <div>
-                  <p>
-                    좌석선택 이후 5분이내 결제가 완료되지 않을 시 선택하신
-                    좌석의 선점 기회를 잃게 됩니다.
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="tk_footer"><div class="tk_footer1"></div></div>
           </div>
         </div>
+
         <div class="box_seat">
           <div class="select_seat_info">
             <div class="select_seat_title">선택 좌석</div>
@@ -157,7 +188,7 @@
         <div class="btn_onestop">
           <span class="button btNext"
             ><div id="nextTicketSelection" class="btnOne btnOneB" to="/price">
-              좌석 선택 완료<em class="one_arr next_ar">다음</em>
+              교환 요청
             </div></span
           >
         </div>
@@ -167,6 +198,7 @@
 </template>
 
 <script setup>
+import axios from 'axios';
 import { onMounted, ref } from 'vue';
 import SeatComponent from '../book/SeatComponent.vue';
 import { useBookingStore } from '@/stores/useBookingStore';
@@ -175,7 +207,6 @@ import { formatNumber } from '@/utils/formatPrice';
 const bookingStore = useBookingStore();
 const selectedSeat = ref(null);
 const selectedSection = ref(bookingStore.sections[0]);
-
 
 onMounted(async () => {
   await bookingStore.getSection();
@@ -187,33 +218,69 @@ const selectSection = (section) => {
   bookingStore.setSection(section.id);
 };
 
-
 const getData = (seatInfo) => {
   selectedSeat.value = seatInfo;
 };
 
-const next = () => {
-  bookingStore.setSeat(
-    bookingStore.book.programId,
-    bookingStore.book.timesId,
-    selectedSeat.value.seatId,
-    selectedSection.value.price
+const next = async () => {
+  const res = await axios.post(
+    '/api/exchange/offer',
+    {
+      id1: 6,
+      id2: 15,
+    },
+    { withCredentials: true }
   );
+
+  console.log(res);
+
+  if (res.status == 200) {
+    if (res.data.code == 1002) {
+      window.alert('교환 요청에 성공했습니다.');
+      window.close();
+    } else {
+      window.alert('잘못된 교환 요청입니다.');
+    }
+  }
 };
 </script>
 
 <style scoped>
+.box_seat .box_ticket .box_total_inner {
+  margin: 10px 14px;
+  line-height: 20px;
+}
+.box_seat .box_ticket .box_total_inner .tk_b {
+  font-size: 14px;
+  color: #333;
+}
+.box_seat .box_ticket .box_total_inner .tk_tit {
+  float: left;
+  width: 37%;
+}
+.box_seat .box_ticket .box_total_inner .pay {
+  float: right;
+  width: 63%;
+  text-align: right;
+  letter-spacing: 0;
+}
+.box_seat .box_ticket .box_total_inner .list_tkpay {
+  line-height: 24px;
+  color: #888;
+}
+.box_seat .box_ticket .box_result {
+  margin: 0;
+  padding: 15px;
+}
 .little {
   font-weight: 500;
   font-size: 14px;
   margin-left: 5px;
 }
-
 .selected {
-  background-color: #f0f0f0; /* 선택된 항목의 배경색 */
-  font-weight: bold; /* 선택된 항목의 글씨 굵기 */
+  background-color: #f0f0f0;
+  font-weight: 700;
 }
-
 #wrapper {
   position: absolute;
   overflow: hidden;
@@ -246,7 +313,7 @@ const next = () => {
   position: relative;
 }
 .section_onestop:after {
-  content: "";
+  content: '';
   display: block;
   clear: both;
 }
@@ -271,17 +338,10 @@ const next = () => {
 .select_tit {
   padding-bottom: 6px;
   font-weight: 700;
-  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic",
+  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic',
     sans-serif;
   font-size: 16px;
   color: #333;
-}
-.one_list li {
-  position: relative;
-  font-size: 12px;
-}
-.one_list .btn_detail {
-  margin-left: 0;
 }
 .btn_onestop {
   position: absolute;
@@ -309,22 +369,6 @@ const next = () => {
 }
 .btn_onestop .button .btnOne.btnOneB {
   width: 243px;
-}
-.btn_onestop .button .btnOne .one_arr {
-  display: inline-block;
-  overflow: hidden;
-  width: 6px;
-  height: 17px;
-  background: url(//cdnticket.melon.co.kr/resource/image/web/onestop/btn_onestop.png)
-    no-repeat;
-  background-size: 100px auto;
-  text-indent: -9999px;
-}
-.btn_onestop .button .btnOne .one_arr.next_ar {
-  position: absolute;
-  top: 18px;
-  right: 20px;
-  background-position: -30px -20px;
 }
 .box_select .box_ticket {
   width: 620px;
@@ -356,10 +400,6 @@ const next = () => {
   letter-spacing: 0;
   color: #333;
 }
-.box_select .box_ticket h4 .txt em {
-  font-weight: 700;
-  color: #00b523;
-}
 .box_select .list_ticket {
   display: block;
   background-color: #fff;
@@ -382,7 +422,7 @@ const next = () => {
 .box_seat_top .tit_seat {
   position: relative;
   padding: 11px 0 0 28px;
-  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic",
+  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic',
     sans-serif;
   font-size: 16px;
   color: #404040;
@@ -434,7 +474,7 @@ const next = () => {
   background-color: #c8c8c8;
 }
 .wrap_seat .box_stage .stage span {
-  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic",
+  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic',
     sans-serif;
   font-size: 16px;
   color: #fff;
@@ -455,7 +495,7 @@ const next = () => {
 .seat_box .seat_btn {
   height: 35px;
   padding: 0 10px 0 30px;
-  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic",
+  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic',
     sans-serif;
   font-size: 16px;
   color: #fff;
@@ -507,9 +547,6 @@ const next = () => {
 .wrap_ticket_info .box_info .box_ticket .box_ticket_inner {
   padding: 10px 15px;
 }
-.wrap_ticket_info .box_info .box_ticket .box_ticket_inner th {
-  text-align: left;
-}
 .wrap_ticket_info .box_info .box_ticket .box_ticket_inner td {
   padding: 8px 0;
 }
@@ -543,6 +580,7 @@ const next = () => {
 }
 .box_seat {
   margin-top: 10px;
+  margin-bottom: 10px;
 }
 .wrap_ticket_info .wrap_seat_list .box_seat {
   width: 240px;
@@ -556,7 +594,10 @@ const next = () => {
   overflow-y: auto;
   margin: 0;
   padding-top: 9px;
-  height: 240px;
+  height: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .wrap_ticket_info .wrap_seat_list .box_seat_inner.box_seat_area2 {
   overflow-y: scroll;
@@ -573,30 +614,6 @@ const next = () => {
   font-size: 13px;
   font-weight: 400;
   line-height: 32px;
-}
-.wrap_ticket_info
-  .wrap_seat_list
-  .box_seat_inner
-  .list_seat
-  li
-  .seat
-  .seat_name
-  .seat_color {
-  display: block;
-  margin-right: 7px;
-  width: 12px;
-  height: 12px;
-  vertical-align: middle;
-}
-.wrap_ticket_info
-  .wrap_seat_list
-  .box_seat_inner
-  .list_seat
-  li
-  .seat
-  .seat_name
-  .seat_color.seat_vip {
-  background-color: #6f68ae;
 }
 .wrap_ticket_info .wrap_seat_list .box_seat_inner .tbl {
   width: 100%;
@@ -636,36 +653,6 @@ const next = () => {
   align-items: center;
   background-color: #fcf0dd;
 }
-.wrap_ticket_info .wrap_seat_list .box_seat_inner th.seat_color {
-  display: inline-block;
-  vertical-align: top;
-}
-.wrap_ticket_info .wrap_seat_list .box_seat_inner th.seat_color em.seat_color {
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  margin: 10px 4px 0 10px;
-  text-indent: -9999px;
-}
-.wrap_ticket_info .wrap_seat_list .box_seat_inner th.seat_color.seat_vip {
-  background-color: #6f68ae;
-}
-.wrap_ticket_info
-  .wrap_seat_list
-  .box_seat_inner
-  th.seat_color.seat_color.seat_s {
-  background-color: #f9d02c;
-}
-.wrap_ticket_info
-  .wrap_seat_list
-  .box_seat_inner
-  th.seat_color.seat_color.seat_a {
-  background-color: #a2d747;
-}
-.wrap_ticket_info .wrap_seat_list .box_seat_inner td.seat_remain {
-  color: #00b523;
-  padding-right: 3px;
-}
 .wrap_ticket_info .wrap_seat_list .box_seat_inner td.area_info {
   overflow: hidden;
   background: url(//cdnticket.melon.co.kr/resource/image/web/onestop/bg_onestop_arr2.png)
@@ -697,82 +684,6 @@ const next = () => {
 }
 .wrap_ticket_info .wrap_seat_list .box_seat_inner .box_list_area .list_area li {
   padding: 0 10px 0 28px;
-}
-.layer_ticket {
-  z-index: 2;
-  display: none;
-  width: 165px;
-  position: absolute;
-  top: 90px;
-  left: 73px;
-}
-.layer_ticket .layer_arr {
-  position: absolute;
-  top: 1px;
-  right: 78px;
-  display: block;
-  width: 15px;
-  height: 10px;
-  background: url(//cdnticket.melon.co.kr/resource/image/web/onestop/btn_onestop.png)
-    no-repeat;
-  background-size: 100px auto;
-  background-position: -50px -20px;
-}
-.layer_ticket .tk_tit {
-  display: inline-block;
-}
-.layer_ticket .tk_footer,
-.layer_ticket .tk_footer .tk_footer1,
-.layer_ticket .tk_header,
-.layer_ticket .tk_header .tk_header1 {
-  display: inline-block;
-  background: url(//cdnticket.melon.co.kr/resource/image/web/onestop/bg_popup.png)
-    no-repeat;
-}
-.layer_ticket .tk_middle,
-.layer_ticket .tk_middle .tk_middle1 {
-  display: inline-block;
-  background: url(//cdnticket.melon.co.kr/resource/image/web/onestop/bg_popup1.png)
-    repeat-y;
-}
-.layer_ticket .tk_header {
-  width: 100%;
-  height: 18px;
-  padding: 0 0 0 8px;
-  background-position: 0 0;
-}
-.layer_ticket .tk_header .tk_header1 {
-  width: 100%;
-  height: 18px;
-  padding: 0 0 0 2px;
-  background-position: right 0;
-}
-.layer_ticket .tk_footer {
-  width: 100%;
-  height: 20px;
-  padding: 0 0 0 8px;
-  background-position: 0 -40px;
-}
-.layer_ticket .tk_footer .tk_footer1 {
-  width: 100%;
-  height: 20px;
-  padding: 0 0 0 2px;
-  background-position: right -40px;
-}
-.layer_ticket .tk_middle {
-  width: 100%;
-  padding: 0 0 0 8px;
-  background-position: 0 0;
-}
-.layer_ticket .tk_middle .tk_middle1 {
-  width: 100%;
-  padding: 0 0 0 2px;
-  background-position: right 0;
-}
-.layer_ticket .layer_ticket_inner.layer_info {
-  width: 234px;
-  padding: 12px 5px;
-  font-size: 12px;
 }
 .wrap_onestop {
   width: 1008px;
@@ -808,22 +719,6 @@ const next = () => {
 .seat_info li a {
   line-height: 13px;
 }
-.seat_info em.seat_color {
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  margin: 7px 7px 0 5px;
-  text-indent: -9999px;
-}
-.seat_info .seat_color.seat_vip {
-  background-color: #6f68ae;
-}
-.seat_info .seat_color.seat_s {
-  background-color: #f9d02c;
-}
-.seat_info .seat_color.seat_a {
-  background-color: #a2d747;
-}
 .btn_flexible_ico2 {
   background-position: left -860px;
   padding-left: 7px;
@@ -844,8 +739,8 @@ const next = () => {
 .btn_flexible_ico2 span {
   background-position: right -130px;
   color: #666;
-  font-family: AppleSDGothicNeo-Regular, "돋움", Dotum, "맑은 고딕",
-    "Malgun Gothic", "Apple Gothic", sans-serif;
+  font-family: AppleSDGothicNeo-Regular, '돋움', Dotum, '맑은 고딕',
+    'Malgun Gothic', 'Apple Gothic', sans-serif;
 }
 .btn_flexible_ico1 span,
 .btn_flexible_ico2 span,
