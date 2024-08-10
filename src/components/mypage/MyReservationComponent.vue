@@ -78,7 +78,7 @@ import { formatDate, formatDateTime } from '@/utils/formatDate';
 defineProps(['reservation']);
 
 const openPopup = () => {
-  const popUrl = '/seat';
+  const popUrl = '/exchangeSeat';
   const popOption =
     'width=986, height=682, resizable=no, scrollbars=no, status=no;'; // 팝업창 옵션
   window.open(popUrl, '', popOption);
@@ -86,31 +86,6 @@ const openPopup = () => {
 </script>
 
 <style scoped>
-.scrollable {
-  height: 400px;
-  overflow-y: auto;
-  border: 1px solid #ccc;
-  padding: 10px;
-}
-
-.scrollable::-webkit-scrollbar {
-  width: 10px;
-}
-
-.scrollable::-webkit-scrollbar-track {
-  background: #f7f7f7;
-  border-radius: 10px;
-}
-
-.scrollable::-webkit-scrollbar-thumb {
-  background: #cdcdcd;
-  border-radius: 10px;
-}
-
-.scrollable::-webkit-scrollbar-thumb:hover {
-  background: #9f9f9f;
-}
-
 .exchange_list {
   display: flex;
   justify-content: space-between;
@@ -120,33 +95,6 @@ const openPopup = () => {
   position: absolute;
   top: 20px;
   right: 0;
-}
-
-.list_sorting_menu {
-  padding-top: 8px;
-}
-
-.list_sorting_menu li {
-  display: inline-block;
-}
-
-.list_sorting_menu li.on a {
-  color: #00b523;
-  font-weight: bold;
-}
-
-.list_sorting_menu li.first a {
-  background: none;
-}
-
-.list_sorting_menu li a {
-  display: block;
-  padding: 0 17px 0 20px;
-  background: url(//cdnticket.melon.co.kr/resource/image/web/common/submenu_bar.png)
-    no-repeat left 6px;
-  font-size: 16px;
-  color: #333;
-  font-family: AppleSDGothicNeo-Regular, '돋움', Dotum;
 }
 
 .here {
@@ -159,101 +107,21 @@ const openPopup = () => {
   justify-content: center;
 }
 
-.clear_g {
-  display: block;
-  overflow: visible;
-  width: auto;
-  clear: both;
-}
-#conts {
-  display: block;
-  position: relative;
-  width: 1008px;
-  min-height: 600px;
-  padding: 0 20px 53px;
-  margin: 0 auto;
-}
-.none,
-.screen_out {
-  overflow: hidden;
-  font-size: 0 !important;
-  width: 0 !important;
-  height: 0 !important;
-  line-height: 0 !important;
-  text-indent: -9999px;
-}
 .wrap_person {
   margin-top: 40px;
   border: 1px solid #ddd;
   background: #fafafa;
   overflow: hidden;
 }
-.box_person_info {
-  float: left;
-  position: relative;
-  width: 500px;
-  padding: 24px 24px;
-  background: #fff;
-}
-.box_person_info .thumb {
-  position: relative;
-  float: left;
-  width: 100px;
-  height: 100px;
-}
+
 img {
   border: 0 none;
 }
-.frame_100_100_radius {
-  display: block;
-  overflow: hidden;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100px;
-  height: 100px;
-  background: url(//cdnticket.melon.co.kr/resource/image/web/common/frame_100_100_radius.png)
-    center center no-repeat;
-  text-indent: -9999px;
-}
-.box_person_info .info_text {
-  float: left;
-  width: 380px;
-  height: 100px;
-  margin-left: 20px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.box_person_info .info_text .person_id {
-  display: block;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  font-size: 28px;
-  color: #333;
-  line-height: 60px;
-  max-width: 370px;
-  padding: 0 4px;
-  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic';
-}
-.box_person_info .info_text .person_id .icon.kakao {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  margin-right: 8px;
-  background: url(//cdnticket.melon.co.kr/resource/image/web/common/ico_kakao.png)
-    no-repeat 0 0;
-  background-size: 20px 20px;
-  text-indent: -9999em;
-  vertical-align: middle;
-}
+
 i {
   font-style: italic;
 }
-.box_person_info .info_text .person_btn {
-  display: block;
-}
+
 .btn_line {
   border: 1px solid #ccc;
   height: 18px;
@@ -419,25 +287,7 @@ table.tbl_style02 tbody td {
 .box_ticket_list table.tbl_style02 tbody td .movie_infor .img img {
   width: 90px;
 }
-.thumb_117x117 img,
-.thumb_130x180 img,
-.thumb_130x184 img,
-.thumb_135x135 img,
-.thumb_160x225 img,
-.thumb_180x250 img,
-.thumb_190x142 img,
-.thumb_234x176 img,
-.thumb_238x178 img,
-.thumb_268x120 img,
-.thumb_268x155 img,
-.thumb_280x166 img,
-.thumb_314x235 img,
-.thumb_320x400 img,
-.thumb_339x328 img,
-.thumb_340x328 img,
-.thumb_545x150 img,
-.thumb_660x328 img,
-.thumb_661x328 img,
+
 .thumb_90x125 img,
 .thumb_90x90 img {
   vertical-align: top;
@@ -459,10 +309,7 @@ img {
   width: 90px;
   height: 125px;
 }
-.thumb_130x180 .frame,
-.thumb_130x184 .frame,
-.thumb_160x225 .frame,
-.thumb_180x250 .frame,
+
 .thumb_320x400 .frame,
 .thumb_90x125 .frame {
   display: block;
