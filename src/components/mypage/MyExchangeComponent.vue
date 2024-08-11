@@ -35,4 +35,68 @@ import { defineProps } from 'vue';
 const props = defineProps(['exchangeList']);
 </script>
 
-<style scoped></style>
+<style scoped>
+.scrollable {
+  height: 400px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+.scrollable::-webkit-scrollbar {
+  width: 10px;
+}
+.scrollable::-webkit-scrollbar-track {
+  background: #f7f7f7;
+  border-radius: 10px;
+}
+.scrollable::-webkit-scrollbar-thumb {
+  background: #cdcdcd;
+  border-radius: 10px;
+}
+.scrollable::-webkit-scrollbar-thumb:hover {
+  background: #9f9f9f;
+}
+.exchange_list a {
+  display: flex;
+  justify-content: space-between;
+  color: #666;
+  text-decoration: none;
+}
+
+.box_no_list2 {
+  height: 143px;
+  border: 1px solid #eee;
+  padding-top: 91px;
+  overflow: hidden;
+}
+.box_no_list2 p {
+  color: #333;
+  font-size: 20px;
+  text-align: center;
+  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic';
+}
+.box_no_list2 .btn {
+  display: block;
+  margin-top: 25px;
+  font-size: 12px;
+  color: #666;
+}
+.box_no_list2 .btn .btn_line {
+  border: 1px solid #ccc;
+  height: 18px;
+  padding: 6px 16px 6px;
+}
+.wrap_taken .list_evnt {
+  border: 1px solid #eee;
+  padding: 6px 23px 8px;
+  margin-top: 4px;
+  height: 218px;
+}
+.wrap_taken .list_evnt li.lst {
+  border-bottom: none;
+}
+.wrap_taken .list_evnt li {
+  padding: 16px 0 16px;
+  border-bottom: 1px solid #eee;
+}
+</style>

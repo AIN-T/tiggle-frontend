@@ -18,13 +18,11 @@
               /></a>
             </div>
             <div class="infor_text">
-              <span class="ico_list_b ico_list_b1" id="iconType" style=""
-                >좌석우위</span
-              >
+              <span class="ico_list_b ico_list_b1" id="iconType">좌석우위</span>
               <p class="ticket_title">
                 <a href="javascript:goPerfBoard();"
                   ><span id="txtPerfMainName"
-                    >뮤지컬 {{ this.exchangeStore.exchange.programName }}</span
+                    >뮤지컬 {{ exchangeStore.exchange.programName }}</span
                   ></a
                 >
               </p>
@@ -50,7 +48,7 @@
                 <dt>예매번호</dt>
                 <dd>
                   <span class="fc_green" id="txtRsrvNo">{{
-                    this.exchangeStore.exchange.ticketNumber
+                    exchangeStore.exchange.ticketNumber
                   }}</span>
                 </dd>
                 <dt id="dtPlaceName">공연장</dt>
@@ -61,7 +59,7 @@
                     id="txtPlaceName"
                     title="충무아트센터 대극장"
                     ><span class="place">{{
-                      this.exchangeStore.exchange.location
+                      exchangeStore.exchange.location
                     }}</span
                     ><em></em
                   ></a>
@@ -137,19 +135,17 @@
                   <tr>
                     <td class="fst lst">내 티켓</td>
                     <td class="fst lst">
-                      {{ this.exchangeStore.exchange.myTicketInfo.grade }}석
+                      {{ exchangeStore.exchange.myTicketInfo.grade }}석
                     </td>
                     <td class="seat_site fst lst">
-                      {{ this.exchangeStore.exchange.myTicketInfo.sectionName }}
+                      {{ exchangeStore.exchange.myTicketInfo.sectionName }}
                       1층 15열
-                      {{ this.exchangeStore.exchange.myTicketInfo.seatNumber }}
+                      {{ exchangeStore.exchange.myTicketInfo.seatNumber }}
                       번
                     </td>
                     <td class="seat_price fst lst">
                       {{
-                        formatNumber(
-                          this.exchangeStore.exchange.myTicketInfo.price
-                        )
+                        formatNumber(exchangeStore.exchange.myTicketInfo.price)
                       }}원
                     </td>
                   </tr>
@@ -158,26 +154,22 @@
                   <tr>
                     <td class="fst lst">상대 티켓</td>
                     <td class="fst lst">
-                      {{ this.exchangeStore.exchange.otherTicketInfo.grade }}석
+                      {{ exchangeStore.exchange.otherTicketInfo.grade }}석
                     </td>
                     <td class="seat_site fst lst">
-                      {{
-                        this.exchangeStore.exchange.otherTicketInfo.sectionName
-                      }}
+                      {{ exchangeStore.exchange.otherTicketInfo.sectionName }}
                       2층 15열
-                      {{
-                        this.exchangeStore.exchange.otherTicketInfo.seatNumber
-                      }}번
+                      {{ exchangeStore.exchange.otherTicketInfo.seatNumber }}번
                     </td>
                     <td class="seat_price fst lst">
                       {{
                         formatNumber(
-                          this.exchangeStore.exchange.otherTicketInfo.price
+                          exchangeStore.exchange.otherTicketInfo.price
                         )
                       }}원
                     </td>
                     <td class="seat_cancle fst lst">
-                      {{ formatNumber(this.exchangeStore.exchange.diffPrice) }}
+                      {{ formatNumber(exchangeStore.exchange.diffPrice) }}
                       원
                     </td>
                   </tr>
@@ -200,7 +192,7 @@
                     btColorGray: exchangeStore.exchange.isDone,
                   }"
                   @click="
-                    !exchangeStore.exchange.isDone ? approval(1, false) : null
+                    !exchangeStore.exchange.isDone ? approval(false) : null
                   "
                 >
                   교환 거절
@@ -212,7 +204,7 @@
                     btColorGray: exchangeStore.exchange.isDone,
                   }"
                   @click="
-                    !exchangeStore.exchange.isDone ? approval(1, true) : null
+                    !exchangeStore.exchange.isDone ? approval(true) : null
                   "
                 >
                   교환 승인
@@ -280,37 +272,29 @@
   </div>
 </template>
 
-<script>
-import { mapStores } from 'pinia';
+<script setup>
+import { onMounted } from 'vue';
 import { useExchangeStore } from '@/stores/useExchangeStore.js';
 import axios from 'axios';
+import { useRoute } from 'vue-router';
+import { formatNumber } from '@/utils/formatPrice';
 
-export default {
-  name: 'ExchangeAgreeComponent',
-  computed: {
-    ...mapStores(useExchangeStore),
-  },
+const exchangeStore = useExchangeStore();
+const route = useRoute();
 
-  mounted() {
-    this.exchangeStore.getData(this.$route.params.id);
-    console.log(this.exchangeStore.exchange);
-  },
-  data() {
-    return {};
-  },
-  methods: {
-    formatNumber(value) {
-      return new Intl.NumberFormat().format(value);
+onMounted(async () => {
+  await exchangeStore.getData(route.params.id);
+});
+
+const approval = async (isAgree) => {
+  await axios.post(
+    '/api/approval',
+    {
+      exchangeId: exchangeStore.exchange.exchangeId,
+      isAgree: isAgree,
     },
-
-    async approval(idx, isAgree) {
-      await axios.post(
-        '/api/approval',
-        { exchangeId: idx, isAgree: isAgree },
-        { withCredentials: true }
-      );
-    },
-  },
+    { withCredentials: true }
+  );
 };
 </script>
 

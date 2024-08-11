@@ -47,12 +47,7 @@
                 height: 526px;
               "
             >
-              <div
-                class="seat_block"
-                id="ez_canvas_zone"
-                style="width: 682px; height: 602px; display: none"
-              ></div>
-              <SeatComponent @seatInfo="getData" />
+              <SeatComponent @seatInfo="getData" :type="'exchange'" />
             </div>
           </div>
         </div>
@@ -226,8 +221,8 @@ const next = async () => {
   const res = await axios.post(
     '/api/exchange/offer',
     {
-      id1: 6,
-      id2: 15,
+      id1: bookingStore.reservationId,
+      id2: selectedSeat.value.reservationId,
     },
     { withCredentials: true }
   );
