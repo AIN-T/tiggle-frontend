@@ -287,14 +287,18 @@ onMounted(async () => {
 });
 
 const approval = async (isAgree) => {
-  await axios.post(
-    '/api/approval',
+  const res = await axios.post(
+    '/api/exchange/approval',
     {
       exchangeId: exchangeStore.exchange.exchangeId,
       isAgree: isAgree,
     },
     { withCredentials: true }
   );
+
+  if (res.status == 200) {
+    alert('교환이 완료되었습니다.');
+  }
 };
 </script>
 
