@@ -74,10 +74,23 @@
 <script setup>
 import { defineProps } from 'vue';
 import { formatDate, formatDateTime } from '@/utils/formatDate';
+import { useBookingStore } from '@/stores/useBookingStore';
 
-defineProps(['reservation']);
+const props = defineProps(['reservation']);
+
+const bookingStore = useBookingStore();
 
 const openPopup = () => {
+  bookingStore.setReservationId(props.reservation.reservationId);
+
+  bookingStore.setData(
+    props.reservation.locationId,
+    props.reservation.programName,
+    props.reservation.programId,
+    props.reservation.timesId,
+    props.reservation.sectionId
+  );
+
   const popUrl = '/exchangeSeat';
   const popOption =
     'width=986, height=682, resizable=no, scrollbars=no, status=no;'; // 팝업창 옵션
