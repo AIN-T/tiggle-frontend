@@ -14,7 +14,7 @@
         <span class="frame"></span>
       </span>
 
-      <strong class="tit">{{ props.program.programInfo }}</strong>
+      <strong class="tit">{{ props.program.programName }}</strong>
       <span class="day">
         {{ formatDate(props.program.programStartDate) }} -
         {{ formatDate(props.program.programEndDate) }}</span
