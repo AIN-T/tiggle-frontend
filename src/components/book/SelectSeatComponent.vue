@@ -54,7 +54,7 @@
                 id="ez_canvas_zone"
                 style="width: 682px; height: 602px; display: none"
               ></div>
-              <SeatComponent @seatInfo="getData" />
+              <SeatComponent @seatInfo="getData" :type="'purchase'" />
             </div>
           </div>
         </div>
