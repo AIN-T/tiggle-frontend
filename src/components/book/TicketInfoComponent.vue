@@ -3,8 +3,8 @@
     <h2 class="logo_onestop">
       <a href="#none"
         ><img
-          src="https://cdnticket.melon.co.kr/resource/image/web/onestop/logo_onestop.png"
-          alt="Melon 티켓"
+          src="https://daqu2024-s3.s3.ap-northeast-2.amazonaws.com/tiggle.png"
+          alt="TIGGLE"
       /></a>
     </h2>
     <div class="box_info">
@@ -103,9 +103,9 @@
 </template>
 
 <script setup>
-import { formatDateTime, formatRefundStringDate } from '@/utils/formatDate';
-import { formatNumber } from '@/utils/formatPrice';
-import { defineProps } from 'vue';
+import { formatDateTime, formatRefundStringDate } from "@/utils/formatDate";
+import { formatNumber } from "@/utils/formatPrice";
+import { defineProps } from "vue";
 
 defineProps(['reservation', 'point', 'isValid', 'price']);
 </script>
@@ -152,7 +152,7 @@ defineProps(['reservation', 'point', 'isValid', 'price']);
 .select_tit {
   padding-bottom: 6px;
   font-weight: 700;
-  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic',
+  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic",
     sans-serif;
   font-size: 16px;
   color: #333;
