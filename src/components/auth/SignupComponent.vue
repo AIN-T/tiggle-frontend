@@ -243,9 +243,24 @@ const member = ref({
 });
 
 const signup = async () => {
+  const isEmailDuplicated = await memberStore.duplicatedEmail(
+    member.value.email
+  );
+
+  if (isEmailDuplicated) {
+    alert('이미 가입된 이메일입니다. 다른 이메일을 사용해 주세요.');
+    return;
+  }
+
+  // 중복이 없는 경우 회원가입 진행
   const res = await memberStore.signup(member.value);
   if (res) {
+    // 가입 성공 시
+    alert('이메일에 발송된 링크를 눌러 가입을 완료하세요!');
     router.push('/login');
+  } else {
+    // 가입 실패 시
+    alert('가입에 실패했습니다. 다시 시도해 주세요.');
   }
 };
 </script>
@@ -303,8 +318,8 @@ const signup = async () => {
 
 .uInputArea.emailType {
   position: relative;
-  background: url('//openimage.interpark.com/member/common/icon/icon_arrow_down.png')
-    100% 50% no-repeat;
+  /* background: url('//openimage.interpark.com/member/common/icon/icon_arrow_down.png')
+    100% 50% no-repeat; */
   background-size: 22px auto;
 }
 
@@ -711,7 +726,7 @@ const signup = async () => {
   height: 100%;
 }
 
-.uSelectBox label {
+/* .uSelectBox label {
   display: inline-block;
   position: relative;
   min-width: 160px;
@@ -734,7 +749,7 @@ const signup = async () => {
   font-size: 15px;
   line-height: 30px;
   color: #666;
-}
+} */
 
 button {
   -webkit-appearance: none;
