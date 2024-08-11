@@ -92,5 +92,16 @@ export const useMemberStore = defineStore('member', {
         return false;
       }
     },
+    async duplicatedEmail(email) {
+      try {
+        const response = await axios.post('/api/user/duplicatedEmail', {
+          email,
+        });
+        return response.data.result;
+      } catch (error) {
+        console.error('이메일 중복 체크 실패', error);
+        return false;
+      }
+    },
   },
 });
