@@ -23,17 +23,22 @@
 </template>
 
 <script setup>
-import { ref, defineEmits, onMounted, watch } from 'vue';
+import { ref, defineEmits, onMounted, watch, defineProps } from 'vue';
 import { useBookingStore } from '@/stores/useBookingStore';
 
 const emit = defineEmits(['seatInfo']);
+const type = defineProps(['type']);
 
 const bookingStore = useBookingStore();
 const selectedSeat = ref(null);
 const selectedSeatInfo = ref(null);
 
 onMounted(async () => {
-  await bookingStore.getSeatLists();
+  if (type.type == 'purchase') {
+    await bookingStore.getSeatLists();
+  } else if (type.type == 'exchange') {
+    await bookingStore.getExchangeSeatLists();
+  }
 });
 
 watch(
@@ -41,7 +46,11 @@ watch(
   async (newSectionId, oldSectionId) => {
     if (newSectionId !== oldSectionId) {
       resetSelectedSeat();
-      await bookingStore.getSeatLists();
+      if (type.type == 'purchase') {
+        await bookingStore.getSeatLists();
+      } else if (type.type == 'exchange') {
+        await bookingStore.getExchangeSeatLists();
+      }
     }
   }
 );
