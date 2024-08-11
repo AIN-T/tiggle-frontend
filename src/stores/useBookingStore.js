@@ -42,6 +42,21 @@ export const useBookingStore = defineStore('booking', {
       return this.book.seatLists;
     },
 
+    async getExchangeSeatLists() {
+      const res = await axios.post(
+        '/api/seat/available/exchange',
+        {
+          programId: this.book.programId,
+          timesId: this.book.timesId,
+          sectionId: this.book.sectionId,
+        },
+        { withCredentials: true }
+      );
+
+      this.book.seatLists = res.data.result;
+      return this.book.seatLists;
+    },
+
     async setSeat(programId, timesId, seatId, price) {
       const res = await axios.post(
         '/api/verify',
@@ -92,6 +107,10 @@ export const useBookingStore = defineStore('booking', {
 
     setSection(id) {
       this.book.sectionId = id;
+    },
+
+    setReservationId(id) {
+      this.reservationId = id;
     },
   },
 });
