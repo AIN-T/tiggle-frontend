@@ -6,6 +6,7 @@
           <div class="section_detailview_product">
             <div class="wrap_consert_product">
               <!-- 상품 상세정보 -->
+              <br />
               <div class="wrap_consert_cont">
                 <div class="box_consert_thumb thumb_180x254">
                   <img
@@ -227,10 +228,20 @@
                   </ul>
                 </div>
                 <div class="box_img_content" v-if="programsStore.program">
-                  <p class="tit_sub_float">작품설명</p>
+                  <p class="tit_sub_float">좌석 배치도</p>
+
+                  <img
+                    :src="'https://daqu2024-s3.s3.ap-northeast-2.amazonaws.com/reservationImg2.jpg'"
+                    title=""
+                  />
+                  <img
+                    :src="'https://daqu2024-s3.s3.ap-northeast-2.amazonaws.com/reservationImg.jpg'"
+                    title=""
+                  />
+                  <p class="tit_sub_float">작품 설명</p>
                   <img
                     :src="
-                      programsStore.program.imageUrls.length > 0
+                      programsStore.program.imageUrls.length > 1
                         ? programsStore.program.imageUrls[1]
                         : 'default-image-url.jpg'
                     "
@@ -382,7 +393,7 @@ function formatTime(dateString) {
 .wrap_detail_tab_6 .detail_title {
   font-size: 24px;
   font-weight: 700;
-  text-align: center;
+  text-align: left;
   color: #333;
 }
 
@@ -511,7 +522,7 @@ img {
 
 .wrap_detail_tab {
   overflow: hidden;
-  padding-top: 20px;
+  padding-top: 40px;
 }
 
 .wrap_consert_product {
@@ -1107,7 +1118,7 @@ img {
 
 .wrap_detailview_cont {
   display: flex;
-  justify-content: center;
+  justify-content: left;
 }
 
 .wrap_detailview_cont .wrap_detail_left_cont {
