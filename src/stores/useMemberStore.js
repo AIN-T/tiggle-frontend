@@ -31,12 +31,14 @@ export const useMemberStore = defineStore('member', {
         }
       } catch (error) {
         console.log(error);
-
         if (error.response && error.response.status === 401) {
           console.log('401 에러');
         } else if (error.response && error.response.status === 405) {
           console.log('405 에러 처리');
+        } else if (error.response && error.response.status === 403) {
+          console.log('403 에러');
         }
+        return false;
       }
     },
 

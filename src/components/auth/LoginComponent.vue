@@ -146,14 +146,16 @@
         </div>
       </form>
     </div>
-    <div class="layerContainer" id="findIdLayer">
+    <div v-show="showModal" class="layerContainer">
       <div class="layer">
         <p class="layerTitle">
           <b>아이디 또는 비밀번호가 틀려<br />로그인 할 수 없어요.</b>
         </p>
         <p class="layerText">먼저 계정을 찾아주세요.</p>
         <div class="btn">
-          <button type="button" class="btnClose">취소</button>
+          <button type="button" class="btnClose" @click="closeModal">
+            취소
+          </button>
           <a href="#" class="btnFind findId">계정 찾기</a>
         </div>
       </div>
@@ -170,9 +172,12 @@ const memberStore = useMemberStore();
 const router = useRouter();
 const route = useRoute();
 const member = ref({ email: null, password: null });
+const showModal = ref(false);
 
 const login = async () => {
   const result = await memberStore.login(member.value);
+
+  console.log(result);
 
   if (result) {
     const redirectPath = route.query.redirect || '/';
@@ -183,7 +188,14 @@ const login = async () => {
     }
 
     router.push(redirectPath);
+  } else {
+    showModal.value = true;
+    console.log('showModal:', showModal.value);
   }
+};
+
+const closeModal = () => {
+  showModal.value = false; // 모달 닫기
 };
 </script>
 
@@ -565,7 +577,7 @@ input[type='search']::-webkit-search-results-decoration {
   font-size: 1.3rem;
 }
 .layerContainer {
-  display: none;
+  /* display: none; */
   position: fixed;
   left: 0;
   right: 0;
