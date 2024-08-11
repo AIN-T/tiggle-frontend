@@ -145,7 +145,9 @@
                                   <span class="txt">
                                     <span class="in">
                                       <span>{{ price.gradeName }}석</span>
-                                      <strong>{{ price.price }}</strong>
+                                      <strong>{{
+                                        formatPrice(price.price)
+                                      }}</strong>
                                     </span>
                                   </span>
                                 </p>
@@ -211,6 +213,7 @@
                 <div class="box_base_price">
                   <p class="tit_sub_float">가격정보</p>
                   <p class="tit_sub_ss_float">기본가</p>
+                  <br />
                   <ul class="list_seat">
                     <li
                       v-for="price in programsStore.prices"
@@ -218,7 +221,7 @@
                     >
                       <span class="seat_name">{{ price.gradeName }}석</span>
                       <span class="price">
-                        {{ price.price }}
+                        {{ formatPrice(price.price) }}
                       </span>
                     </li>
                   </ul>
@@ -244,12 +247,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
-import { useRoute } from "vue-router";
-import { useProgramsStore } from "@/stores/useProgramsStore";
-import { useBookingStore } from "@/stores/useBookingStore";
-import VueDatePicker from "@vuepic/vue-datepicker";
-import "@vuepic/vue-datepicker/dist/main.css";
+import { ref, computed, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { useProgramsStore } from '@/stores/useProgramsStore';
+import { useBookingStore } from '@/stores/useBookingStore';
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css';
 
 const programsStore = useProgramsStore();
 const bookingStore = useBookingStore();
@@ -287,11 +290,11 @@ const enabledDates = computed(() => {
 
 const disabledDates = computed(() => {
   const enabledDatesList = enabledDates.value.map(
-    (date) => new Date(date.setHours(0, 0, 0, 0)).toISOString().split("T")[0]
+    (date) => new Date(date.setHours(0, 0, 0, 0)).toISOString().split('T')[0]
   );
   return (date) =>
     !enabledDatesList.includes(
-      new Date(date.setHours(0, 0, 0, 0)).toISOString().split("T")[0]
+      new Date(date.setHours(0, 0, 0, 0)).toISOString().split('T')[0]
     );
 });
 
@@ -299,32 +302,35 @@ const selectedDateRounds = computed(() => {
   if (!Array.isArray(programsStore.times) || !selectedDate.value) {
     return [];
   }
-  const selectedDateString = selectedDate.value.toISOString().split("T")[0];
+  const selectedDateString = selectedDate.value.toISOString().split('T')[0];
   return programsStore.times.filter((round) =>
     round.date.startsWith(selectedDateString)
   );
 });
 
 function formatDate(dateString) {
-  if (!dateString) return "";
+  if (!dateString) return '';
   const date = new Date(dateString);
-  if (isNaN(date.getTime())) return "";
+  if (isNaN(date.getTime())) return '';
   const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
 
   return `${year}.${month}.${day}`;
 }
 
+function formatPrice(value) {
+  return new Intl.NumberFormat('ko-KR').format(value) + '원';
+}
+
 const openPopup = () => {
   if (!selectedRound.value) {
-    alert("회차를 선택해주세요.");
+    alert('회차를 선택해주세요.');
     return;
   }
 
   const programId = route.params.id;
   const timesId = selectedRound.value.id;
-
   bookingStore.setData(
     programsStore.program.locationId,
     programsStore.program.programName,
@@ -333,10 +339,10 @@ const openPopup = () => {
     1
   );
 
-  const popUrl = "/seat";
+  const popUrl = '/seat';
   const popOption =
-    "width=986, height=682, resizable=no, scrollbars=no, status=no;"; // 팝업창 옵션
-  window.open(popUrl, "", popOption);
+    'width=986, height=682, resizable=no, scrollbars=no, status=no;'; // 팝업창 옵션
+  window.open(popUrl, '', popOption);
 };
 
 function selectRound(round) {
@@ -345,13 +351,13 @@ function selectRound(round) {
 
 function formatTime(dateString) {
   const options = {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
   };
-  return new Date(dateString).toLocaleString("ko-KR", options);
+  return new Date(dateString).toLocaleString('ko-KR', options);
 }
 </script>
 
@@ -366,7 +372,7 @@ function formatTime(dateString) {
 #calender {
   display: flex;
   flex-direction: column;
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
   color: #2c3e50;
   width: 90vw;
   margin-left: auto;
@@ -454,7 +460,7 @@ img {
   height: 48px;
   line-height: 46px;
   font-size: 16px;
-  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic";
+  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic';
 }
 
 .tit_sub_float {
@@ -472,7 +478,7 @@ img {
   margin-left: 4px;
   font-size: 20px;
   line-height: 54px;
-  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic";
+  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic';
   color: #000;
   text-align: left;
 }
@@ -500,7 +506,7 @@ img {
   height: 48px;
   line-height: 46px;
   font-size: 16px;
-  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic";
+  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic';
 }
 
 .wrap_detail_tab {
@@ -541,7 +547,7 @@ img {
   font-size: 26px;
   line-height: 32px;
   color: #333;
-  font-family: AppleSDGothicNeo-Regular, "맑은고딕", "Malgun Gothic";
+  font-family: AppleSDGothicNeo-Regular, '맑은고딕', 'Malgun Gothic';
 }
 
 .wrap_consert_product .wrap_consert_cont .box_consert_txt .tit_s {
@@ -550,7 +556,7 @@ img {
   line-height: 24px;
   color: #666;
   padding-right: 170px;
-  font-family: AppleSDGothicNeo-Regular, "맑은고딕", "Malgun Gothic";
+  font-family: AppleSDGothicNeo-Regular, '맑은고딕', 'Malgun Gothic';
   word-wrap: break-word;
   word-break: break-all;
 }
@@ -565,7 +571,7 @@ img {
   width: 67px;
   color: #666;
   font-size: 14px;
-  font-family: AppleSDGothicNeo-Regular, "돋움", Dotum;
+  font-family: AppleSDGothicNeo-Regular, '돋움', Dotum;
 }
 
 .wrap_consert_product .wrap_consert_cont .price_info .txt_info {
@@ -578,7 +584,7 @@ img {
   font-size: 14px;
   line-height: 32px;
   color: #666;
-  font-family: AppleSDGothicNeo-Regular, "돋움", Dotum;
+  font-family: AppleSDGothicNeo-Regular, '돋움', Dotum;
 }
 
 .wrap_consert_product .wrap_consert_cont .box_consert_info .info_left {
@@ -784,7 +790,7 @@ img {
   font-size: 16px;
   line-height: 40px;
   color: #666;
-  font-family: AppleSDGothicNeo-Regular, "돋움", Dotum;
+  font-family: AppleSDGothicNeo-Regular, '돋움', Dotum;
   letter-spacing: 0;
 }
 
@@ -840,7 +846,7 @@ img {
   font-size: 16px;
   line-height: 40px;
   color: #666;
-  font-family: AppleSDGothicNeo-Regular, "돋움", Dotum;
+  font-family: AppleSDGothicNeo-Regular, '돋움', Dotum;
   letter-spacing: 0;
 }
 
@@ -917,7 +923,7 @@ img {
   overflow: hidden;
   font-size: 12px;
   color: #666;
-  font-family: AppleSDGothicNeo-Regular, "돋움", Dotum;
+  font-family: AppleSDGothicNeo-Regular, '돋움', Dotum;
   text-align: left;
 }
 
@@ -1003,7 +1009,7 @@ img {
   width: 200px;
   font-size: 12px;
   color: #666;
-  font-family: AppleSDGothicNeo-Regular, "돋움", Dotum;
+  font-family: AppleSDGothicNeo-Regular, '돋움', Dotum;
   vertical-align: top;
 }
 
@@ -1058,7 +1064,7 @@ img {
   padding-right: 15px;
   font-size: 12px;
   color: #666;
-  font-family: AppleSDGothicNeo-Regular, "돋움", Dotum;
+  font-family: AppleSDGothicNeo-Regular, '돋움', Dotum;
 }
 
 .btn_ticketing_type {
@@ -1079,7 +1085,7 @@ img {
   font-size: 17px;
   line-height: 24px;
   color: #00cd3c;
-  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic";
+  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic';
   padding-top: 12px;
   vertical-align: top;
 }
@@ -1146,7 +1152,7 @@ img {
   font-size: 16px;
   line-height: 28px;
   color: #333;
-  font-family: AppleSDGothicNeo-Regular, "돋움", Dotum;
+  font-family: AppleSDGothicNeo-Regular, '돋움', Dotum;
 }
 
 .wrap_detailview_cont
@@ -1278,7 +1284,7 @@ img {
   height: 48px;
   line-height: 46px;
   font-size: 16px;
-  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic";
+  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic';
 }
 
 .btSizeL:hover {
