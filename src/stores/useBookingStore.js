@@ -44,7 +44,7 @@ export const useBookingStore = defineStore('booking', {
 
     async getExchangeSeatLists() {
       const res = await axios.post(
-        '/api/seat/available/exchange',
+        '/api/seat/exchange',
         {
           programId: this.book.programId,
           timesId: this.book.timesId,
@@ -64,11 +64,17 @@ export const useBookingStore = defineStore('booking', {
         { withCredentials: true }
       );
 
-      if (res.status == 200) {
-        this.reservationId = res.data.result.reservationId;
-        this.book.price = price;
+      console.log(res.data);
 
-        router.push('/price');
+      if (res.status == 200) {
+        if (res.data.code === 5000) {
+          alert('이미 선택된 좌석입니다. 다른 좌석을 선택해주세요.');
+        } else {
+          this.reservationId = res.data.result.reservationId;
+          this.book.price = price;
+
+          router.push('/price');
+        }
       }
     },
 
