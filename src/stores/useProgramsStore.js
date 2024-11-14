@@ -75,5 +75,24 @@ export const useProgramsStore = defineStore('programs', {
         console.log('Failed get', error);
       }
     },
+
+    async like(id) {
+      const currentLikeStatus = this.program.like;
+      this.program.like = !currentLikeStatus;
+
+      try {
+        const response = await axios.post(
+          `/api/like/${id}`,
+          {},
+          { withCredentials: true }
+        );
+
+        console.log('Like status updated successfully');
+        return response;
+      } catch (error) {
+        console.error('Failed to update like status:', error);
+        this.program.like = currentLikeStatus;
+      }
+    },
   },
 });
