@@ -21,9 +21,31 @@
                   <span class="frame"></span>
                 </div>
                 <div class="box_consert_txt">
-                  <p class="tit">
-                    {{ programsStore.program.programName }}
-                  </p>
+                  <div class="title_tab">
+                    <p class="tit">
+                      {{ programsStore.program.programName }}
+                    </p>
+                    <p
+                      class="like"
+                      @click="programsStore.like(route.params.id)"
+                    >
+                      <font-awesome-icon
+                        v-if="programsStore.program.like"
+                        :icon="['fas', 'heart']"
+                        style="
+                          padding-right: 10px;
+                          font-size: 20px;
+                          color: #db0000;
+                        "
+                      />
+                      <font-awesome-icon
+                        v-else
+                        :icon="['far', 'heart']"
+                        style="padding-right: 10px; font-size: 20px"
+                      />
+                      좋아요
+                    </p>
+                  </div>
                   <div class="tit_s">
                     <p><br /></p>
                   </div>
@@ -378,6 +400,21 @@ function formatTime(dateString) {
 .dp__flex_display {
   display: flex;
   flex-direction: column;
+}
+
+.title_tab {
+  display: flex;
+  align-items: center;
+}
+
+.like {
+  border: 2px solid #a1a0a0;
+  border-radius: 20px;
+  padding: 8px;
+  padding-left: 16px;
+  padding-right: 16px;
+  font-weight: 600;
+  color: #686868;
 }
 
 #calender {
