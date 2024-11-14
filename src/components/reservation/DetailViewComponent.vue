@@ -27,7 +27,8 @@
                     </p>
                     <p
                       class="like"
-                      @click="programsStore.like(route.params.id)"
+                      @click="isLoggedIn && programsStore.like(route.params.id)"
+                      :class="{ disabled: !isLoggedIn, clickable: isLoggedIn }"
                     >
                       <font-awesome-icon
                         v-if="programsStore.program.like"
@@ -284,12 +285,16 @@ import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useProgramsStore } from '@/stores/useProgramsStore';
 import { useBookingStore } from '@/stores/useBookingStore';
+import { useMemberStore } from '@/stores/useMemberStore';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 
 const programsStore = useProgramsStore();
 const bookingStore = useBookingStore();
+const memberStore = useMemberStore();
 const route = useRoute();
+
+const isLoggedIn = memberStore.isLoggedIn;
 
 const selectedDate = ref(null);
 const selectedRound = ref(null);
@@ -400,6 +405,21 @@ function formatTime(dateString) {
 .dp__flex_display {
   display: flex;
   flex-direction: column;
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.clickable {
+  cursor: pointer;
+  transition: background-color 0.1s;
+}
+
+.clickable:hover {
+  background-color: #d3d3d3;
+  color: #000;
 }
 
 .title_tab {
