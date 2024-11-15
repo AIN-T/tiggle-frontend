@@ -82,7 +82,7 @@
                   <strong class="tit">{{ item.title }}</strong>
                   <span class="day">{{ item.date }}</span>
                   <span class="location">{{ item.location }}</span>
-                  <span class="stat">
+                  <span class="stat" @click.prevent="like(item.id)">
                     <font-awesome-icon :icon="['fas', 'heart']" />
                   </span>
                 </a>
@@ -187,9 +187,25 @@ onMounted(async () => {
     isLoading.value = false;
   }
 });
+
+const like = async (id) => {
+  try {
+    await programStore.like(id);
+
+    myLikes.value = await programStore.getMyLikes();
+  } catch (error) {
+    console.error('Failed to update likes:', error);
+  }
+};
 </script>
 
 <style scoped>
+.list_main_concert {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0px;
+}
+
 .loading {
   display: flex;
   justify-content: center;
