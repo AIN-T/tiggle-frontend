@@ -63,7 +63,12 @@
                 <font-awesome-icon :icon="['fas', 'chevron-right']" />
               </p>
             </div>
-            <ul class="list_main_concert" id="perf_poster">
+
+            <div v-if="isLoading" class="loading">
+              <font-awesome-icon :icon="['fas', 'spinner']" />
+            </div>
+
+            <ul v-else class="list_main_concert" id="perf_poster">
               <li
                 v-for="(item, index) in myLikes"
                 :key="index"
@@ -157,6 +162,8 @@ import { usePointStore } from '@/stores/usePointStore';
 import { useMyHeaderStore } from '@/stores/useMyHeaderStore';
 import MyExchangeComponent from './MyExchangeComponent.vue';
 
+const isLoading = ref(true);
+
 const exchangeListStore = useExchangeListStore();
 const programStore = useProgramsStore();
 const pointStore = usePointStore();
@@ -166,17 +173,44 @@ const myLikes = ref([]);
 
 // 컴포넌트가 마운트될 때 데이터 가져오기
 onMounted(async () => {
-  pointStore.reqType.getOrUse = 2; // reqType을 2로 설정
-  await exchangeListStore.getData(0);
-  await programStore.getMyReservations();
-  await pointStore.getPointData(); // reqType을 매개변수로 전달할 필요 없음
-  await myHeaderStore.getMyHeader();
+  try {
+    pointStore.reqType.getOrUse = 2; // reqType을 2로 설정
+    await exchangeListStore.getData(0);
+    await programStore.getMyReservations();
+    await pointStore.getPointData(); // reqType을 매개변수로 전달할 필요 없음
+    await myHeaderStore.getMyHeader();
 
-  myLikes.value = await programStore.getMyLikes();
+    myLikes.value = await programStore.getMyLikes();
+  } catch (error) {
+    console.log(error);
+  } finally {
+    isLoading.value = false;
+  }
 });
 </script>
 
 <style scoped>
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 36px;
+  color: #00b523;
+  animation: blink 1s infinite;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
 .foru {
   display: flex;
   justify-content: space-between;
