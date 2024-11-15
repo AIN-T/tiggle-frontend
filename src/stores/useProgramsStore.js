@@ -94,5 +94,16 @@ export const useProgramsStore = defineStore('programs', {
         this.program.like = currentLikeStatus;
       }
     },
+
+    async getMyLikes() {
+      try {
+        const response = await axios.get(`/api/like/my?page=0&size=4`, {
+          withCredentials: true,
+        });
+        return response.data.result;
+      } catch (error) {
+        console.error('Failed to update like status:', error);
+      }
+    },
   },
 });
