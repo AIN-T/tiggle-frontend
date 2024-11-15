@@ -4,6 +4,7 @@
       <div id="conts_section" class="pr_none">
         <div id="conts" class="clear_g">
           <h2 class="screen_out">마이티켓</h2>
+
           <div class="wrap_person">
             <div class="box_person_info">
               <div class="thumb">
@@ -53,6 +54,7 @@
               </ul>
             </div>
           </div>
+
           <div class="warp_ticket">
             <a>
               <h2 class="tit_sub_float">최근 예매/취소</h2>
@@ -62,15 +64,6 @@
             </div>
             <div class="box_ticket_list" id="divFound">
               <table summary="최근 예매/취소 리스트" class="tbl tbl_style02">
-                <caption class="hide"></caption>
-                <colgroup>
-                  <!-- 카카오페이 추가 -->
-                  <col width="149" />
-                  <col width="470" />
-                  <col width="233" />
-                  <col width="154" />
-                  <!-- 카카오페이 추가 -->
-                </colgroup>
                 <thead>
                   <tr>
                     <th>상태</th>
