@@ -4,6 +4,7 @@
       <div id="conts_section" class="pr_none">
         <div id="conts" class="clear_g">
           <h2 class="screen_out">마이티켓</h2>
+
           <div class="wrap_person">
             <div class="box_person_info">
               <div class="thumb">
@@ -53,6 +54,42 @@
               </ul>
             </div>
           </div>
+
+          <div class="wrap_main_concert">
+            <div class="foru">
+              <h2 class="tit_main_concert">For u</h2>
+              <p>
+                더보기
+                <font-awesome-icon :icon="['fas', 'chevron-right']" />
+              </p>
+            </div>
+
+            <div v-if="isLoading" class="loading">
+              <font-awesome-icon :icon="['fas', 'spinner']" />
+            </div>
+
+            <ul v-else class="list_main_concert" id="perf_poster">
+              <li
+                v-for="(item, index) in myLikes"
+                :key="index"
+                :class="index === 0 ? 'first' : ''"
+              >
+                <a :href="`/detail/${item.id}`" class="inner">
+                  <span class="thumb">
+                    <img :src="item.imageUrl" :alt="item.imageUrl" />
+                    <span class="frame"></span>
+                  </span>
+                  <strong class="tit">{{ item.title }}</strong>
+                  <span class="day">{{ item.date }}</span>
+                  <span class="location">{{ item.location }}</span>
+                  <span class="stat" @click.prevent="like(item.id)">
+                    <font-awesome-icon :icon="['fas', 'heart']" />
+                  </span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
           <div class="warp_ticket">
             <a>
               <h2 class="tit_sub_float">최근 예매/취소</h2>
@@ -62,15 +99,6 @@
             </div>
             <div class="box_ticket_list" id="divFound">
               <table summary="최근 예매/취소 리스트" class="tbl tbl_style02">
-                <caption class="hide"></caption>
-                <colgroup>
-                  <!-- 카카오페이 추가 -->
-                  <col width="149" />
-                  <col width="470" />
-                  <col width="233" />
-                  <col width="154" />
-                  <!-- 카카오페이 추가 -->
-                </colgroup>
                 <thead>
                   <tr>
                     <th>상태</th>
@@ -125,7 +153,7 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useExchangeListStore } from '@/stores/useExchangeListStore.js';
 import { useProgramsStore } from '@/stores/useProgramsStore';
 import MyReservationComponent from './MyReservationComponent.vue';
@@ -134,22 +162,84 @@ import { usePointStore } from '@/stores/usePointStore';
 import { useMyHeaderStore } from '@/stores/useMyHeaderStore';
 import MyExchangeComponent from './MyExchangeComponent.vue';
 
+const isLoading = ref(true);
+
 const exchangeListStore = useExchangeListStore();
 const programStore = useProgramsStore();
 const pointStore = usePointStore();
 const myHeaderStore = useMyHeaderStore();
 
+const myLikes = ref([]);
+
 // 컴포넌트가 마운트될 때 데이터 가져오기
 onMounted(async () => {
-  pointStore.reqType.getOrUse = 2; // reqType을 2로 설정
-  await exchangeListStore.getData(0);
-  await programStore.getMyReservations();
-  await pointStore.getPointData(); // reqType을 매개변수로 전달할 필요 없음
-  await myHeaderStore.getMyHeader();
+  try {
+    pointStore.reqType.getOrUse = 2; // reqType을 2로 설정
+    await exchangeListStore.getData(0);
+    await programStore.getMyReservations();
+    await pointStore.getPointData(); // reqType을 매개변수로 전달할 필요 없음
+    await myHeaderStore.getMyHeader();
+
+    myLikes.value = await programStore.getMyLikes();
+  } catch (error) {
+    console.log(error);
+  } finally {
+    isLoading.value = false;
+  }
 });
+
+const like = async (id) => {
+  try {
+    await programStore.like(id);
+
+    myLikes.value = await programStore.getMyLikes();
+  } catch (error) {
+    console.error('Failed to update likes:', error);
+  }
+};
 </script>
 
 <style scoped>
+.list_main_concert {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0px;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 36px;
+  color: #00b523;
+  animation: blink 1s infinite;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.foru {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.foru p {
+  color: gray;
+  margin-right: 5px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
 .scrollable {
   height: 400px;
   overflow-y: auto;
@@ -591,6 +681,7 @@ table .btn_flexible {
   background-position: right -110px;
   padding-right: 8px;
   color: #00b523;
+  display: flex;
 }
 .btn_flexible_ico1 span,
 .btn_flexible_ico2 span,
@@ -602,5 +693,14 @@ table .btn_flexible {
   line-height: 18px;
   text-align: center;
   vertical-align: top;
+}
+
+.wrap_main_concert .list_main_concert .stat {
+  display: flex;
+  justify-content: end;
+}
+
+.wrap_main_concert .list_main_concert li {
+  margin-top: 10px;
 }
 </style>
