@@ -55,6 +55,36 @@
             </div>
           </div>
 
+          <div class="wrap_main_concert">
+            <div class="foru">
+              <h2 class="tit_main_concert">For u</h2>
+              <p>
+                더보기
+                <font-awesome-icon :icon="['fas', 'chevron-right']" />
+              </p>
+            </div>
+            <ul class="list_main_concert" id="perf_poster">
+              <li
+                v-for="(item, index) in myLikes"
+                :key="index"
+                :class="index === 0 ? 'first' : ''"
+              >
+                <a :href="`/detail/${item.id}`" class="inner">
+                  <span class="thumb">
+                    <img :src="item.imageUrl" :alt="item.imageUrl" />
+                    <span class="frame"></span>
+                  </span>
+                  <strong class="tit">{{ item.title }}</strong>
+                  <span class="day">{{ item.date }}</span>
+                  <span class="location">{{ item.location }}</span>
+                  <span class="stat">
+                    <font-awesome-icon :icon="['fas', 'heart']" />
+                  </span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
           <div class="warp_ticket">
             <a>
               <h2 class="tit_sub_float">최근 예매/취소</h2>
@@ -118,7 +148,7 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useExchangeListStore } from '@/stores/useExchangeListStore.js';
 import { useProgramsStore } from '@/stores/useProgramsStore';
 import MyReservationComponent from './MyReservationComponent.vue';
@@ -132,6 +162,8 @@ const programStore = useProgramsStore();
 const pointStore = usePointStore();
 const myHeaderStore = useMyHeaderStore();
 
+const myLikes = ref([]);
+
 // 컴포넌트가 마운트될 때 데이터 가져오기
 onMounted(async () => {
   pointStore.reqType.getOrUse = 2; // reqType을 2로 설정
@@ -139,10 +171,25 @@ onMounted(async () => {
   await programStore.getMyReservations();
   await pointStore.getPointData(); // reqType을 매개변수로 전달할 필요 없음
   await myHeaderStore.getMyHeader();
+
+  myLikes.value = await programStore.getMyLikes();
 });
 </script>
 
 <style scoped>
+.foru {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.foru p {
+  color: gray;
+  margin-right: 5px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
 .scrollable {
   height: 400px;
   overflow-y: auto;
@@ -584,6 +631,7 @@ table .btn_flexible {
   background-position: right -110px;
   padding-right: 8px;
   color: #00b523;
+  display: flex;
 }
 .btn_flexible_ico1 span,
 .btn_flexible_ico2 span,
@@ -595,5 +643,14 @@ table .btn_flexible {
   line-height: 18px;
   text-align: center;
   vertical-align: top;
+}
+
+.wrap_main_concert .list_main_concert .stat {
+  display: flex;
+  justify-content: end;
+}
+
+.wrap_main_concert .list_main_concert li {
+  margin-top: 10px;
 }
 </style>
