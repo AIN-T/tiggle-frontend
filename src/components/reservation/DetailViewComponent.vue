@@ -28,16 +28,16 @@
                     <p
                       class="like"
                       @click="isLoggedIn && programsStore.like(route.params.id)"
-                      :class="{ disabled: !isLoggedIn, clickable: isLoggedIn }"
+                      :class="{
+                        disabled: !isLoggedIn,
+                        clickable: isLoggedIn,
+                        liked: programsStore.program.like,
+                      }"
                     >
                       <font-awesome-icon
                         v-if="programsStore.program.like"
                         :icon="['fas', 'heart']"
-                        style="
-                          padding-right: 10px;
-                          font-size: 20px;
-                          color: #db0000;
-                        "
+                        style="padding-right: 10px; font-size: 20px"
                       />
                       <font-awesome-icon
                         v-else
@@ -435,6 +435,11 @@ function formatTime(dateString) {
   padding-right: 16px;
   font-weight: 600;
   color: #686868;
+}
+
+.like.liked {
+  color: #00cd3c;
+  border: 2px solid #00cd3c;
 }
 
 #calender {
