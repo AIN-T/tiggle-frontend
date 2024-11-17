@@ -15,14 +15,10 @@
               id="scheduleNo"
               name="scheduleNo"
               class="sel_cate"
+              v-model="currentTimesId"
               @change="selectSchedule($event.target.value)"
             >
-              <option
-                v-for="(time, index) in difTime"
-                :key="time.id"
-                :value="time.id"
-                :selected="index === 0"
-              >
+              <option v-for="time in difTime" :key="time.id" :value="time.id">
                 {{ formatOption(time.date) }}
               </option>
             </select>
@@ -182,11 +178,12 @@ const bookingStore = useBookingStore();
 const programStore = useProgramsStore();
 const selectedSeat = ref(null);
 const selectedSection = ref(bookingStore.sections[0]);
-
+const currentTimesId = ref(null);
 const difTime = ref([]);
 
 onMounted(async () => {
   await bookingStore.getSection();
+  currentTimesId.value = bookingStore.book.timesId;
   difTime.value = await programStore.times(bookingStore.book.programId);
 });
 
@@ -218,6 +215,15 @@ const formatOption = (date) => {
   };
   const formattedDate = new Date(date).toLocaleDateString('ko-KR', options);
   return `${formattedDate} `;
+};
+
+const selectSchedule = async (selectedId) => {
+  try {
+    currentTimesId.value = selectedId;
+    bookingStore.setTimesId(selectedId);
+  } catch (error) {
+    console.error('Error fetching schedule data:', error);
+  }
 };
 </script>
 

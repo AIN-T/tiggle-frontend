@@ -27,6 +27,10 @@ export const useBookingStore = defineStore('booking', {
       this.book.sectionId = sectionId;
     },
 
+    setTimesId(timesId) {
+      this.book.timesId = timesId;
+    },
+
     async getSeatLists() {
       const res = await axios.post(
         '/api/seat/all',

@@ -55,6 +55,20 @@ watch(
   }
 );
 
+watch(
+  () => bookingStore.book.timesId,
+  async (newTimesId, oldTimesId) => {
+    if (newTimesId !== oldTimesId) {
+      resetSelectedSeat();
+      if (type.type == 'purchase') {
+        await bookingStore.getSeatLists();
+      } else if (type.type == 'exchange') {
+        await bookingStore.getExchangeSeatLists();
+      }
+    }
+  }
+);
+
 // 섹션 클릭 시 선택된 좌석 초기화
 const resetSelectedSeat = () => {
   if (selectedSeat.value) {
