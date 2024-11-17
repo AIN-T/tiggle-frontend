@@ -299,8 +299,19 @@ const isLoggedIn = memberStore.isLoggedIn;
 const selectedDate = ref(null);
 const selectedRound = ref(null);
 const isHover = ref(false);
-const isBeforeOpenDate = ref(true);
-const inReservationPeriod = ref(false);
+
+const now = new Date();
+
+const isBeforeOpenDate = computed(() => {
+  const openDate = new Date(programsStore.program.reservationOpenDate);
+  return now < openDate;
+});
+
+const inReservationPeriod = computed(() => {
+  const openDate = new Date(programsStore.program.reservationOpenDate);
+  const endDate = new Date(programsStore.program.programEndDate);
+  return now >= openDate && now < endDate;
+});
 
 onMounted(async () => {
   const programId = route.params.id;
@@ -309,14 +320,6 @@ onMounted(async () => {
     programsStore.PriceInfo(programId),
     programsStore.times(programId),
   ]);
-
-  // 프로그램 데이터가 로드된 후에 계산
-  const now = new Date();
-  isBeforeOpenDate.value =
-    now < new Date(programsStore.program.reservationOpenDate);
-  inReservationPeriod.value =
-    now >= new Date(programsStore.program.reservationOpenDate) &&
-    now < new Date(programsStore.program.programEndDate);
 });
 
 const enabledDates = computed(() => {
