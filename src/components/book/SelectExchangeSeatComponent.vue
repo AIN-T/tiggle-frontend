@@ -90,7 +90,8 @@
                           >
                             <span class="area_tit"
                               >{{ section.gradeName }} 석
-                              {{ section.sectionName }} 구역</span
+                              {{ section.sectionName }} 구역 /
+                              {{ section.remainingCount }} 석</span
                             >
                           </li>
                         </ul>
