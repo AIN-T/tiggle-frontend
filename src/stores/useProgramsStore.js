@@ -41,6 +41,8 @@ export const useProgramsStore = defineStore('programs', {
       try {
         const response = await axios.get(`/api/times/${programId}/seq`);
         this.times = response.data.result;
+
+        return this.times;
       } catch (error) {
         console.error('Failed times:', error);
       }

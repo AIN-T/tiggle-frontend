@@ -15,12 +15,16 @@
               id="scheduleNo"
               name="scheduleNo"
               class="sel_cate"
-              onchange="selectSchedule(this.value);"
+              @change="selectSchedule($event.target.value)"
             >
-              <option value="100001" selected="selected">
-                2024.08.03 (토) 18:00
+              <option
+                v-for="(time, index) in difTime"
+                :key="time.id"
+                :value="time.id"
+                :selected="index === 0"
+              >
+                {{ formatOption(time.date) }}
               </option>
-              <option value="100002">2024.08.04 (일) 17:00</option>
             </select>
           </span>
         </h3>
@@ -171,14 +175,19 @@
 import { onMounted, ref } from 'vue';
 import SeatComponent from '../book/SeatComponent.vue';
 import { useBookingStore } from '@/stores/useBookingStore';
+import { useProgramsStore } from '@/stores/useProgramsStore';
 import { formatNumber } from '@/utils/formatPrice';
 
 const bookingStore = useBookingStore();
+const programStore = useProgramsStore();
 const selectedSeat = ref(null);
 const selectedSection = ref(bookingStore.sections[0]);
 
+const difTime = ref([]);
+
 onMounted(async () => {
   await bookingStore.getSection();
+  difTime.value = await programStore.times(bookingStore.book.programId);
 });
 
 const selectSection = (section) => {
@@ -198,6 +207,17 @@ const next = () => {
     selectedSeat.value.seatId,
     selectedSection.value.price
   );
+};
+
+const formatOption = (date) => {
+  const options = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    weekday: 'short',
+  };
+  const formattedDate = new Date(date).toLocaleDateString('ko-KR', options);
+  return `${formattedDate} `;
 };
 </script>
 
