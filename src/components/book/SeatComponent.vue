@@ -1,6 +1,10 @@
 <template>
   <div class="seating-area">
+    <div v-if="isLoading" class="loading">
+      <font-awesome-icon :icon="['fas', 'spinner']" />
+    </div>
     <div
+      v-else
       class="row"
       v-for="seatList in bookingStore.book.seatLists"
       :key="seatList.idx"
@@ -33,11 +37,19 @@ const bookingStore = useBookingStore();
 const selectedSeat = ref(null);
 const selectedSeatInfo = ref(null);
 
+const isLoading = ref(true);
+
 onMounted(async () => {
-  if (type.type == 'purchase') {
-    await bookingStore.getSeatLists();
-  } else if (type.type == 'exchange') {
-    await bookingStore.getExchangeSeatLists();
+  try {
+    if (type.type == 'purchase') {
+      await bookingStore.getSeatLists();
+    } else if (type.type == 'exchange') {
+      await bookingStore.getExchangeSeatLists();
+    }
+  } catch (error) {
+    console.log(error);
+  } finally {
+    isLoading.value = false;
   }
 });
 
@@ -46,10 +58,18 @@ watch(
   async (newSectionId, oldSectionId) => {
     if (newSectionId !== oldSectionId) {
       resetSelectedSeat();
-      if (type.type == 'purchase') {
-        await bookingStore.getSeatLists();
-      } else if (type.type == 'exchange') {
-        await bookingStore.getExchangeSeatLists();
+      isLoading.value = true;
+
+      try {
+        if (type.type == 'purchase') {
+          await bookingStore.getSeatLists();
+        } else if (type.type == 'exchange') {
+          await bookingStore.getExchangeSeatLists();
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        isLoading.value = false;
       }
     }
   }
@@ -60,10 +80,18 @@ watch(
   async (newTimesId, oldTimesId) => {
     if (newTimesId !== oldTimesId) {
       resetSelectedSeat();
-      if (type.type == 'purchase') {
-        await bookingStore.getSeatLists();
-      } else if (type.type == 'exchange') {
-        await bookingStore.getExchangeSeatLists();
+      isLoading.value = true;
+
+      try {
+        if (type.type == 'purchase') {
+          await bookingStore.getSeatLists();
+        } else if (type.type == 'exchange') {
+          await bookingStore.getExchangeSeatLists();
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        isLoading.value = false;
       }
     }
   }
@@ -106,6 +134,26 @@ const clickSeat = (e, seatInfo) => {
 </script>
 
 <style scoped>
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 36px;
+  color: #00b523;
+  animation: blink 1s infinite;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
 .seating-area {
   display: flex;
   flex-direction: column;
