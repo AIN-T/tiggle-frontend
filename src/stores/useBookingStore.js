@@ -68,8 +68,6 @@ export const useBookingStore = defineStore('booking', {
         { withCredentials: true }
       );
 
-      console.log(res.data);
-
       if (res.status == 200) {
         if (res.data.code === 5000) {
           alert('이미 선택된 좌석입니다. 다른 좌석을 선택해주세요.');

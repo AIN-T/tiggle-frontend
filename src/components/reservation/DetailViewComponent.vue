@@ -377,7 +377,7 @@ const openPopup = () => {
     programsStore.program.programName,
     programId,
     timesId,
-    1
+    programsStore.program.firstSectionId
   );
 
   const popUrl = '/seat';
