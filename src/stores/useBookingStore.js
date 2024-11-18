@@ -27,6 +27,10 @@ export const useBookingStore = defineStore('booking', {
       this.book.sectionId = sectionId;
     },
 
+    setTimesId(timesId) {
+      this.book.timesId = timesId;
+    },
+
     async getSeatLists() {
       const res = await axios.post(
         '/api/seat/all',
@@ -63,8 +67,6 @@ export const useBookingStore = defineStore('booking', {
         { programId: programId, timesId: timesId, seatId: seatId },
         { withCredentials: true }
       );
-
-      console.log(res.data);
 
       if (res.status == 200) {
         if (res.data.code === 5000) {

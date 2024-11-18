@@ -15,12 +15,12 @@
               id="scheduleNo"
               name="scheduleNo"
               class="sel_cate"
-              onchange="selectSchedule(this.value);"
+              v-model="currentTimesId"
+              @change="selectSchedule($event.target.value)"
             >
-              <option value="100001" selected="selected">
-                2024.08.03 (토) 18:00
+              <option v-for="time in difTime" :key="time.id" :value="time.id">
+                {{ formatOption(time.date) }}
               </option>
-              <option value="100002">2024.08.04 (일) 17:00</option>
             </select>
           </span>
         </h3>
@@ -105,8 +105,9 @@
                           >
                             <span class="area_tit"
                               >{{ section.gradeName }} 석
-                              {{ section.sectionName }} 구역</span
-                            >
+                              {{ section.sectionName }} 구역/
+                              {{ section.remainingCount }} 석
+                            </span>
                           </li>
                         </ul>
                       </div>
@@ -170,15 +171,20 @@
 import { onMounted, ref } from 'vue';
 import SeatComponent from '../book/SeatComponent.vue';
 import { useBookingStore } from '@/stores/useBookingStore';
+import { useProgramsStore } from '@/stores/useProgramsStore';
 import { formatNumber } from '@/utils/formatPrice';
 
 const bookingStore = useBookingStore();
+const programStore = useProgramsStore();
 const selectedSeat = ref(null);
 const selectedSection = ref(bookingStore.sections[0]);
-
+const currentTimesId = ref(null);
+const difTime = ref([]);
 
 onMounted(async () => {
   await bookingStore.getSection();
+  currentTimesId.value = bookingStore.book.timesId;
+  difTime.value = await programStore.times(bookingStore.book.programId);
 });
 
 const selectSection = (section) => {
@@ -186,7 +192,6 @@ const selectSection = (section) => {
 
   bookingStore.setSection(section.id);
 };
-
 
 const getData = (seatInfo) => {
   selectedSeat.value = seatInfo;
@@ -199,6 +204,26 @@ const next = () => {
     selectedSeat.value.seatId,
     selectedSection.value.price
   );
+};
+
+const formatOption = (date) => {
+  const options = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    weekday: 'short',
+  };
+  const formattedDate = new Date(date).toLocaleDateString('ko-KR', options);
+  return `${formattedDate} `;
+};
+
+const selectSchedule = async (selectedId) => {
+  try {
+    currentTimesId.value = selectedId;
+    bookingStore.setTimesId(selectedId);
+  } catch (error) {
+    console.error('Error fetching schedule data:', error);
+  }
 };
 </script>
 
@@ -246,7 +271,7 @@ const next = () => {
   position: relative;
 }
 .section_onestop:after {
-  content: "";
+  content: '';
   display: block;
   clear: both;
 }
@@ -271,7 +296,7 @@ const next = () => {
 .select_tit {
   padding-bottom: 6px;
   font-weight: 700;
-  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic",
+  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic',
     sans-serif;
   font-size: 16px;
   color: #333;
@@ -382,7 +407,7 @@ const next = () => {
 .box_seat_top .tit_seat {
   position: relative;
   padding: 11px 0 0 28px;
-  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic",
+  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic',
     sans-serif;
   font-size: 16px;
   color: #404040;
@@ -434,7 +459,7 @@ const next = () => {
   background-color: #c8c8c8;
 }
 .wrap_seat .box_stage .stage span {
-  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic",
+  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic',
     sans-serif;
   font-size: 16px;
   color: #fff;
@@ -455,7 +480,7 @@ const next = () => {
 .seat_box .seat_btn {
   height: 35px;
   padding: 0 10px 0 30px;
-  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic",
+  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic',
     sans-serif;
   font-size: 16px;
   color: #fff;
@@ -844,8 +869,8 @@ const next = () => {
 .btn_flexible_ico2 span {
   background-position: right -130px;
   color: #666;
-  font-family: AppleSDGothicNeo-Regular, "돋움", Dotum, "맑은 고딕",
-    "Malgun Gothic", "Apple Gothic", sans-serif;
+  font-family: AppleSDGothicNeo-Regular, '돋움', Dotum, '맑은 고딕',
+    'Malgun Gothic', 'Apple Gothic', sans-serif;
 }
 .btn_flexible_ico1 span,
 .btn_flexible_ico2 span,
