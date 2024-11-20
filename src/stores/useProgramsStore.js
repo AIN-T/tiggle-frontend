@@ -28,6 +28,19 @@ export const useProgramsStore = defineStore('programs', {
       }
     },
 
+    async searchPrograms(keyword, page = 0, size = 5) {
+      try {
+        const response = await axios.get(
+          `api/program/search?keyword=${encodeURIComponent(keyword)}&page=${page}&size=${size}`
+        );
+        this.programs = response.data.result;
+
+        console.log('Programs fetched:', this.programs);
+      } catch (error) {
+        console.error('Failed to search programs:', error);
+      }
+    },
+
     async PriceInfo(programId) {
       try {
         const response = await axios.get(`/api/price?programId=${programId}`);
