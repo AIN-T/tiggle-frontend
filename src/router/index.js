@@ -12,6 +12,7 @@ import AgreeComponent from '@/components/auth/AgreeComponent.vue';
 import SignupComponent from '@/components/auth/SignupComponent.vue';
 import ReservationPage from '@/pages/ReservationPage.vue';
 import DeatilProgramPage from '@/pages/DeatilProgramPage.vue';
+import SearchPage from '@/pages/SearchPage.vue';
 
 const requireLogin = async (to, from, next) => {
   const memberStore = useMemberStore();
@@ -75,6 +76,11 @@ const router = createRouter({
     { path: '/agree', component: AgreeComponent },
     { path: '/signup', component: SignupComponent },
     { path: '/detail/:id', component: DeatilProgramPage },
+    {
+      path: '/search',
+      component: SearchPage,
+      props: (route) => ({ keyword: route.query.keyword }),
+    }
   ],
 });
 
