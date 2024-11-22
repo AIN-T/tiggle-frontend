@@ -202,6 +202,7 @@ const next = () => {
     bookingStore.book.programId,
     bookingStore.book.timesId,
     selectedSeat.value.seatId,
+    bookingStore.book.sectionId,
     selectedSection.value.price
   );
 };
