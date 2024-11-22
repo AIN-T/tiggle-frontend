@@ -41,6 +41,18 @@ export const useProgramsStore = defineStore('programs', {
       }
     },
 
+    async getCategoryPrograms(categoryId, page = 0, size = 12) {
+      try {
+        const response = await axios.get(
+          `/api/program/readCategory?categoryId=${categoryId}&page=${page}&size=${size}`
+        );
+        this.programs = response.data.result;
+      } catch (error) {
+        console.error('Error fetching category programs:', error);
+        throw error;
+      }
+    },
+
     async PriceInfo(programId) {
       try {
         const response = await axios.get(`/api/price?programId=${programId}`);
