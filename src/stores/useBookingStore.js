@@ -16,6 +16,7 @@ export const useBookingStore = defineStore('booking', {
     reservationId: '',
     reservation: {},
     sections: {},
+    ticketNumber: '',
   }),
   persist: true,
   actions: {
@@ -78,7 +79,7 @@ export const useBookingStore = defineStore('booking', {
         if (res.data.code === 5000) {
           alert('이미 선택된 좌석입니다. 다른 좌석을 선택해주세요.');
         } else {
-          this.reservationId = res.data.result.reservationId;
+          this.ticketNumber = res.data.result.ticketNumber;
           this.book.price = price;
 
           router.push('/price');
@@ -89,7 +90,7 @@ export const useBookingStore = defineStore('booking', {
     async getReservation() {
       try {
         const response = await axios.get(
-          '/api/reservation/temporary?reservationId=' + this.reservationId,
+          '/api/reservation/temporary?ticketNumber=' + this.ticketNumber,
           {
             withCredentials: true,
           }
