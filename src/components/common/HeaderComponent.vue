@@ -47,34 +47,24 @@
             <input
               type="text"
               title="검색 입력 편집창"
-              name=""
               id="top_search"
+              v-model="searchKeyword"
               class="placeholder"
-              placeholder="안녕하세요 반갑습니다"
-            />
-            <input
-              type="hidden"
-              id="searchValue"
-              value="2024 박서준 팬미팅 ‘서준시（時）’－서울"
-            />
-            <input
-              type="hidden"
-              id="placeholderValue"
-              value="배우 박서준, 7년만의 만남!"
+              placeholder="검색어를 입력하세요"
             />
             <button
               type="button"
               class="btn_icon search_m"
               id="btn_top_search"
               title="검색"
-              a_value=""
+              @click="performSearch"
             >
               <span class="btn_comm">검색</span>
             </button>
           </fieldset>
         </div>
       </div>
-      <div id="gnb_menu">
+      <div id="gnb_menu">a
         <ul class="list_gnb">
           <li class="nth1">
             <router-link class="btn_gnb_menu btn_gnb btn_g_menu01" to="/"
@@ -124,15 +114,22 @@ import { useMemberStore } from '@/stores/useMemberStore.js';
 
 export default {
   name: 'HeaderComponent',
+  data() {
+    return {
+      searchKeyword: '', // 검색어 저장
+    };
+  },
   computed: {
     ...mapStores(useMemberStore),
   },
-  data() {
-    return {};
-  },
   methods: {
-    goTo(dest) {
-      this.$router.push({ path: `/${dest}` }); // '/main' 경로로 이동
+    performSearch() {
+      if (this.searchKeyword.trim()) {
+        // 검색어가 입력된 경우에만 이동
+        this.$router.push({ path: '/search', query: { keyword: this.searchKeyword } });
+      } else {
+        alert('검색어를 입력하세요.');
+      }
     },
   },
 };
