@@ -163,6 +163,15 @@ body {
   color: #666;
   letter-spacing: -1px;
 }
+a.inner {
+  color: black; 
+  text-decoration: none;
+}
+
+a.inner:hover {
+  color: black;
+  text-decoration: underline;
+}
 a {
   color: #666;
   text-decoration: none;
