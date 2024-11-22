@@ -31,7 +31,9 @@
                     <dl>
                       <dt class="tit_tk base_pr">기본가</dt>
                       <dd class="price price_sale_r txt_bd">
-                        {{ formatNumber(bookingStore.book.price) }}원
+                        {{
+                          formatNumber(bookingStore.reservation.ticketPrice)
+                        }}원
                       </dd>
                     </dl>
                   </div>
@@ -270,11 +272,11 @@
                       </thead>
                       <tbody id="partCancelFeeList2">
                         <tr>
-                          <td>2024.08.01</td>
+                          <td>{{ today }}</td>
                           <td>없음</td>
                         </tr>
                         <tr>
-                          <td>2024.08.02</td>
+                          <td>{{ tomorrow }}</td>
                           <td>티켓금액의 30%</td>
                         </tr>
                       </tbody>
@@ -418,8 +420,25 @@ const bookingStore = useBookingStore();
 const inputPoint = ref(0);
 const allAgree = ref(false);
 
+const today = ref('');
+const tomorrow = ref('');
+
+const formatDate = (date) => {
+  return date.toISOString().split('T')[0].replace(/-/g, '.');
+};
+
+const initializeDates = () => {
+  const currentDate = new Date();
+  today.value = formatDate(currentDate);
+
+  const nextDay = new Date();
+  nextDay.setDate(currentDate.getDate() + 1);
+  tomorrow.value = formatDate(nextDay);
+};
+
 onMounted(async () => {
   await bookingStore.getReservation();
+  initializeDates();
 });
 
 watch(inputPoint, (newValue) => {
