@@ -61,10 +61,16 @@ export const useBookingStore = defineStore('booking', {
       return this.book.seatLists;
     },
 
-    async setSeat(programId, timesId, seatId, price) {
+    async setSeat(programId, timesId, seatId, sectionId, price) {
       const res = await axios.post(
         '/api/verify',
-        { programId: programId, timesId: timesId, seatId: seatId },
+        {
+          programId: programId,
+          timesId: timesId,
+          sectionId: sectionId,
+          seatId: seatId,
+          totalPrice: price,
+        },
         { withCredentials: true }
       );
 
@@ -101,7 +107,9 @@ export const useBookingStore = defineStore('booking', {
           '/api/section?locationId=' +
             this.book.locationId +
             '&programId=' +
-            this.book.programId,
+            this.book.programId +
+            '&timesId=' +
+            this.book.timesId,
           {
             withCredentials: true,
           }
