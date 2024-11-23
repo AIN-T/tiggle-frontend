@@ -86,7 +86,7 @@ const router = createRouter({
     {
       path: '/category/:categoryId',
       component: CategoryPage,
-      props: true, // categoryId를 props로 전달
+      props: true,
       beforeEnter: async (to, from, next) => {
         const programsStore = useProgramsStore();
         const categoryId = to.params.categoryId;
@@ -100,11 +100,9 @@ const router = createRouter({
         }
       },
     }
-    
   ],
 });
 
-// 예외 처리
 router.onError((error) => {
   console.log(error);
 });
