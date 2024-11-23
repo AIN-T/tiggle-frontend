@@ -51,6 +51,7 @@
               v-model="searchKeyword"
               class="placeholder"
               placeholder="검색어를 입력하세요"
+              @keyup.enter="performSearch"
             />
             <button
               type="button"
@@ -64,7 +65,7 @@
           </fieldset>
         </div>
       </div>
-      <div id="gnb_menu">a
+      <div id="gnb_menu">
         <ul class="list_gnb">
           <li class="nth1">
             <router-link class="btn_gnb_menu btn_gnb btn_g_menu01" to="/"
@@ -72,14 +73,28 @@
             >
           </li>
           <li class="nth2">
-            <a class="btn_gnb_menu btn_gnb btn_g_menu02">콘서트</a>
+            <a
+              class="btn_gnb_menu btn_gnb btn_g_menu02"
+              @click="navigateWithReload('/category/2')"
+            >
+              콘서트
+            </a>
           </li>
           <li class="nth3">
-            <a class="btn_gnb_menu btn_gnb btn_g_menu03">뮤지컬/연극</a>
+            <a
+              class="btn_gnb_menu btn_gnb btn_g_menu03"
+              @click="navigateWithReload('/category/1')"
+            >
+              뮤지컬/연극
+            </a>
           </li>
-
           <li class="nth10">
-            <a class="btn_gnb_menu btn_gnb btn_g_menu10">클래식</a>
+            <a
+              class="btn_gnb_menu btn_gnb btn_g_menu10"
+              @click="navigateWithReload('/category/3')"
+            >
+              클래식
+            </a>
           </li>
           <li class="nth9">
             <router-link class="btn_gnb_menu btn_gnb btn_g_menu09" to="/mypage"
@@ -109,14 +124,14 @@
 </template>
 
 <script>
-import { mapStores } from 'pinia';
-import { useMemberStore } from '@/stores/useMemberStore.js';
+import { mapStores } from "pinia";
+import { useMemberStore } from "@/stores/useMemberStore.js";
 
 export default {
-  name: 'HeaderComponent',
+  name: "HeaderComponent",
   data() {
     return {
-      searchKeyword: '', // 검색어 저장
+      searchKeyword: "",
     };
   },
   computed: {
@@ -125,11 +140,18 @@ export default {
   methods: {
     performSearch() {
       if (this.searchKeyword.trim()) {
-        // 검색어가 입력된 경우에만 이동
-        this.$router.push({ path: '/search', query: { keyword: this.searchKeyword } });
+        this.$router.push({
+          path: "/search",
+          query: { keyword: this.searchKeyword },
+        });
       } else {
-        alert('검색어를 입력하세요.');
+        alert("검색어를 입력하세요.");
       }
+    },
+    navigateWithReload(path) {
+      this.$router.push(path).then(() => {
+        window.location.reload();
+      });
     },
   },
 };
@@ -204,8 +226,8 @@ button,
 input {
   font-size: 12px;
   line-height: 1.5;
-  font-family: AppleSDGothicNeo-Regular, '돋움', Dotum, '맑은 고딕',
-    'Malgun Gothic', 'Apple Gothic', sans-serif;
+  font-family: AppleSDGothicNeo-Regular, "돋움", Dotum, "맑은 고딕",
+    "Malgun Gothic", "Apple Gothic", sans-serif;
   color: #666;
   letter-spacing: -1px;
 }
@@ -255,7 +277,7 @@ button {
   height: 0;
   font-size: 0;
   clear: both;
-  content: '';
+  content: "";
 }
 .btn_comm {
   display: block;
@@ -484,7 +506,7 @@ button {
     top center repeat-x;
 }
 #header:after {
-  content: '';
+  content: "";
   display: block;
   clear: both;
 }
@@ -500,7 +522,7 @@ button {
   height: 112px;
 }
 #header_wrap #gnb:after {
-  content: '';
+  content: "";
   display: block;
   clear: both;
 }

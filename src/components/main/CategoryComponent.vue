@@ -1,108 +1,57 @@
 <template>
-  <div class="search-container">
-    <p class="search_tit">
-      <span>{{ keyword }}</span> 검색결과
-    </p>
-    <div
-      class="box_movie tapping on"
-      style="margin: 0 auto; width: fit-content"
-    >
-      <table summary="" class="tbl tbl_style02">
-        <caption class="hide"></caption>
-        <colgroup>
-          <col width="603" />
-          <col width="170" />
-          <col width="235" />
-        </colgroup>
-        <tbody>
-          <tr
-            v-for="program in programsStore.programs"
-            :key="program.programId"
-          >
-            <td>
-              <div class="show_infor">
-                <div class="thumb_90x125 img">
-                  <router-link
-                    :to="'/detail/' + program.programId"
-                    class="inner"
-                  >
-                    <img
-                      :src="
-                        program.imageFiles && program.imageFiles.length > 0
-                          ? program.imageFiles[0]
-                          : 'default-image-url.jpg'
-                      "
-                      alt="공연 이미지"
-                      width="90"
-                    />
-                    <span class="frame"></span>
-                  </router-link>
-                </div>
-                <p class="infor_text">
-                  <router-link
-                    :to="'/detail/' + program.programId"
-                    class="inner"
-                  >
-                    <span class="show_title">{{ program.programName }}</span>
-                  </router-link>
-                </p>
-              </div>
-            </td>
-            <td class="show_date">
-              {{ formatDate(program.programStartDate) }} -
-              {{ formatDate(program.programEndDate) }}
-            </td>
-            <td class="show_loc">{{ program.locationName }}</td>
-          </tr>
-        </tbody>
-      </table>
+  <div id="conts" class="clear_g">
+    <div class="wrap_main_concert">
+      <div class="category-header">
+        <h2 class="tit_main_concert">장르별 공연</h2>
+        <p class="category-description">
+          {{ categoryName }} 카테고리에서 선택된 최고의 공연을 만나보세요.
+        </p>
+      </div>
+
+      <ul class="list_main_concert" id="perf_poster">
+        <CardComponent
+          v-for="program in programsStore.programs"
+          :key="program.programId"
+          :program="program"
+        />
+      </ul>
     </div>
   </div>
-  <div id="drawPerformanceNavgation">
-  <div class="paging_comm">
-    <em class="link_page" @click="goToPage(0)">1</em>
-    <a href="javascript:;" class="link_page" @click="goToPage(1)">2</a>
-    <a href="javascript:;" class="link_page" @click="goToPage(2)">3</a>
-    <a href="javascript:;" class="link_page" @click="goToPage(3)">4</a>
-    <a href="javascript:;" class="link_page" @click="goToPage(4)">5</a>
-    <a href="javascript:;" class="link_page" @click="goToPage(5)">6</a>
-    <a href="javascript:;" class="link_page" @click="goToPage(6)">7</a>
-    <a href="javascript:;" class="link_page" @click="goToPage(7)">8</a>
-    <a href="javascript:;" class="link_page" @click="goToPage(8)">9</a>
-    <a href="javascript:;" class="link_page" @click="goToPage(9)">10</a>
-  </div>
-</div>
 </template>
 
 <script>
-import { mapStores } from "pinia";
-import { useProgramsStore } from "@/stores/useProgramsStore.js";
-import { format } from "date-fns";
+import { mapStores } from 'pinia';
+import { useProgramsStore } from '@/stores/useProgramsStore.js';
+import CardComponent from './CardComponent.vue';
+import { useRoute } from 'vue-router';
 
 export default {
-  name: "SearchComponent",
+  name: 'CategoryComponent',
+  components: { CardComponent },
+  data() {
+    return {
+      categoryId: null,
+    };
+  },
   computed: {
     ...mapStores(useProgramsStore),
-    keyword() {
-      return this.$route.query.keyword || "결과 없음"; // 쿼리에서 키워드 가져오기
+
+    categoryName() {
+      const categories = { 1: '콘서트', 2: '뮤지컬/연극', 3: '클래식' };
+      return categories[this.categoryId] || '기타';
     },
   },
-  mounted() {
-    this.fetchPrograms();
-  },
-  methods: {
-    async fetchPrograms() {
+  async mounted() {
+    const route = useRoute();
+    this.categoryId = parseInt(route.params.categoryId);
+
+    if (this.categoryId) {
       try {
-        if (this.keyword) {
-          await this.programsStore.searchPrograms(this.keyword);
-        }
+        await this.programsStore.getCategoryPrograms(this.categoryId);
       } catch (error) {
-        console.error("Failed to fetch programs:", error);
+        console.error('Error loading category programs:', error);
       }
-    },
-    formatDate(date) {
-      return format(new Date(date), "yyyy.MM.dd");
-    },
+    }
   },
 };
 </script>
@@ -158,19 +107,10 @@ body {
 body {
   font-size: 12px;
   line-height: 1.5;
-  font-family: AppleSDGothicNeo-Regular, "돋움", Dotum, "맑은 고딕",
-    "Malgun Gothic", "Apple Gothic", sans-serif;
+  font-family: AppleSDGothicNeo-Regular, '돋움', Dotum, '맑은 고딕',
+    'Malgun Gothic', 'Apple Gothic', sans-serif;
   color: #666;
   letter-spacing: -1px;
-}
-a.inner {
-  color: black; 
-  text-decoration: none;
-}
-
-a.inner:hover {
-  color: black;
-  text-decoration: underline;
 }
 a {
   color: #666;
@@ -188,28 +128,10 @@ a {
   height: 0;
   font-size: 0;
   clear: both;
-  content: "";
+  content: '';
 }
 .ac {
   text-align: center;
-}
-.paging_comm {
-  font-size: 15px;
-  line-height: 20px;
-  text-align: center;
-  vertical-align: top;
-}
-.paging_comm {
-  margin-top: 40px;
-}
-.link_page {
-  display: inline-block;
-  padding: 2px 11px 3px 12px;
-  text-decoration: none;
-  vertical-align: top;
-  font-size: 16px;
-  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic";
-  color: #333;
 }
 .thumb_117x117,
 .thumb_130x180,
@@ -551,7 +473,7 @@ a {
   margin: 0 auto;
 }
 #conts:after {
-  content: "";
+  content: '';
   display: block;
   overflow: hidden;
   width: 100%;
@@ -562,103 +484,22 @@ a {
 .index #conts {
   padding-top: 0;
 }
-.search-container {
-  margin-top: 20px;
-}
-
-.infor_text {
-  margin-left: 10px;
-}
-
-.box_movie tbody td .show_infor {
-  position: relative;
-  height: 126px;
-  text-align: left;
-  overflow: hidden;
-}
-
-.box_movie tbody td .show_infor {
-  display: flex;
-  align-items: center;
-}
-
-.box_movie tbody td .show_infor .thumb_90x125 {
-  flex-shrink: 0;
-  margin-right: 10px;
-}
-
-.box_movie tbody td .show_infor .infor_text {
-  flex-grow: 1;
-}
-
-.box_movie tbody td .show_infor .infor_text .show_title {
-  display: inline-block;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  font-size: 16px;
-}
-.search_tit {
-  font-size: 2rem;
-  font-weight: bold;
-  text-align: left;
-  margin: 30px auto; /* 상하 간격 조정 */
-  padding-left: 15%; /* 왼쪽 여백을 추가하여 너무 붙지 않도록 설정 */
-  max-width: 80%; /* 제목이 너무 넓게 퍼지지 않도록 제한 */
-}
-
-.box_movie {
-  margin-top: 10px;
-}
-
-.tapping.on {
-  display: block !important;
-}
-.search_tit span {
-  color: #00cd3c;
-  word-break: break-word;
-}
-
-.box_movie {
-  margin-top: 20px; /* 위 간격 */
-}
-.box_movie tbody td {
-  padding: 14px 20px 14px;
-  text-align: center;
-  border-bottom: 1px solid #e9e9e9;
-  font-size: 13px;
-}
-.box_movie tbody td.show_date {
-  padding-left: 60px;
-  padding-top: 41px;
-  line-height: 22px;
-  color: #666;
-  text-align: left;
-  vertical-align: top;
-  letter-spacing: 0;
-}
-.box_movie tbody td {
-  padding: 14px 20px 14px;
-  text-align: center;
-  border-bottom: 1px solid #e9e9e9;
-  font-size: 13px;
-}
-.box_movie tbody td.show_loc {
-  padding-top: 43px;
-  vertical-align: top;
-}
-.box_movie tbody td {
-  padding: 14px 20px 14px;
-  text-align: center;
-  border-bottom: 1px solid #e9e9e9;
-  font-size: 13px;
-}
 .wrap_main_performance {
   display: block;
   overflow: hidden;
   margin-top: 30px;
   border: 1px solid #ddd;
 }
+.category-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.category-description {
+  font-size: 16px;
+  color: #666;
+  margin-top: 8px;
+}
+
 .wrap_main_performance .list_main_performance {
   display: block;
   position: relative;
@@ -680,7 +521,7 @@ a {
   font-weight: 400;
   font-size: 18px;
   line-height: 48px;
-  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic";
+  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic';
   color: #333;
   text-align: center;
 }
@@ -696,7 +537,7 @@ a {
   padding-bottom: 16px;
   font-size: 20px;
   line-height: 28px;
-  font-family: AppleSDGothicNeo-Regular, "맑은 고딕", "Malgun Gothic";
+  font-family: AppleSDGothicNeo-Regular, '맑은 고딕', 'Malgun Gothic';
   color: #333;
 }
 .wrap_main_concert .list_main_concert {

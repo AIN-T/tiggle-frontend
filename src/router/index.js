@@ -13,6 +13,8 @@ import SignupComponent from '@/components/auth/SignupComponent.vue';
 import ReservationPage from '@/pages/ReservationPage.vue';
 import DeatilProgramPage from '@/pages/DeatilProgramPage.vue';
 import SearchPage from '@/pages/SearchPage.vue';
+import CategoryPage from '@/pages/CategoryPage.vue';
+import { useProgramsStore } from '@/stores/useProgramsStore';
 
 const requireLogin = async (to, from, next) => {
   const memberStore = useMemberStore();
@@ -80,7 +82,25 @@ const router = createRouter({
       path: '/search',
       component: SearchPage,
       props: (route) => ({ keyword: route.query.keyword }),
+    },
+    {
+      path: '/category/:categoryId',
+      component: CategoryPage,
+      props: true, // categoryId를 props로 전달
+      beforeEnter: async (to, from, next) => {
+        const programsStore = useProgramsStore();
+        const categoryId = to.params.categoryId;
+    
+        try {
+          await programsStore.getCategoryPrograms(categoryId);
+          next();
+        } catch (error) {
+          console.error('Failed to load category data:', error);
+          next(false);
+        }
+      },
     }
+    
   ],
 });
 
