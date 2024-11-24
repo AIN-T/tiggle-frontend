@@ -12,11 +12,19 @@ export const useProgramsStore = defineStore('programs', {
   }),
 
   actions: {
-    async getPrograms() {
-      const res = await axios.get('/api/program/readRealTime?page=0&size=12');
+    async getPrograms(page = 0, size = 12) {
+      try {
+        const res = await axios.get(`/api/program/readRealTime?page=${page}&size=${size}`);
+        const fetchedPrograms = res.data.result;
 
-      this.programs = res.data.result;
-      console.log(this.programs);
+        if (page === 0) {
+          this.programs = fetchedPrograms;
+        } else {
+          this.programs = [...this.programs, ...fetchedPrograms];
+        }
+      } catch (error) {
+        console.error("Failed to fetch programs:", error);
+      }
     },
 
     async ProgramDetail(id) {
@@ -24,20 +32,24 @@ export const useProgramsStore = defineStore('programs', {
         const response = await axios.get(`/api/program?id=${id}`);
         this.program = response.data.result;
       } catch (error) {
-        console.error('Failed program detail:', error);
+        console.error('Failed to fetch program detail:', error);
       }
     },
 
     async searchPrograms(keyword, page = 0, size = 5) {
       try {
         const response = await axios.get(
-          `api/program/search?keyword=${encodeURIComponent(keyword)}&page=${page}&size=${size}`
+          `/api/program/search?keyword=${encodeURIComponent(keyword)}&page=${page}&size=${size}`
         );
-        this.programs = response.data.result;
+        const fetchedPrograms = response.data.result;
 
-        console.log('Programs fetched:', this.programs);
+        if (page === 0) {
+          this.programs = fetchedPrograms;
+        } else {
+          this.programs = [...this.programs, ...fetchedPrograms];
+        }
       } catch (error) {
-        console.error('Failed to search programs:', error);
+        console.error("Failed to search programs:", error);
       }
     },
 
@@ -46,9 +58,21 @@ export const useProgramsStore = defineStore('programs', {
         const response = await axios.get(
           `/api/program/readCategory?categoryId=${categoryId}&page=${page}&size=${size}`
         );
-        this.programs = response.data.result;
+        const fetchedPrograms = response.data.result;
+
+        if (!fetchedPrograms || fetchedPrograms.length === 0) {
+          return [];
+        }
+
+        if (page === 0) {
+          this.programs = fetchedPrograms;
+        } else {
+          this.programs = [...this.programs, ...fetchedPrograms];
+        }
+
+        return fetchedPrograms;
       } catch (error) {
-        console.error('Error fetching category programs:', error);
+        console.error("Error fetching category programs:", error);
         throw error;
       }
     },
@@ -58,7 +82,7 @@ export const useProgramsStore = defineStore('programs', {
         const response = await axios.get(`/api/price?programId=${programId}`);
         this.prices = response.data.result;
       } catch (error) {
-        console.error('Failed price info:', error);
+        console.error('Failed to fetch price info:', error);
       }
     },
 
@@ -66,10 +90,9 @@ export const useProgramsStore = defineStore('programs', {
       try {
         const response = await axios.get(`/api/times/${programId}/seq`);
         this.times = response.data.result;
-
         return this.times;
       } catch (error) {
-        console.error('Failed times:', error);
+        console.error('Failed to fetch times:', error);
       }
     },
 
@@ -77,29 +100,23 @@ export const useProgramsStore = defineStore('programs', {
       try {
         const response = await axios.get(
           '/api/reservation/myRead?page=0&size=4',
-          {
-            withCredentials: true,
-          }
+          { withCredentials: true }
         );
-
         this.myReservations = response.data.result;
       } catch (error) {
-        console.log('Failed get', error);
+        console.error('Failed to fetch reservations:', error);
       }
     },
 
     async getMyReservation(id) {
       try {
         const response = await axios.get(
-          '/api/reservation/read?reservationId=' + id,
-          {
-            withCredentials: true,
-          }
+          `/api/reservation/read?reservationId=${id}`,
+          { withCredentials: true }
         );
-
         this.myReservation = response.data.result;
       } catch (error) {
-        console.log('Failed get', error);
+        console.error('Failed to fetch reservation:', error);
       }
     },
 
@@ -113,8 +130,6 @@ export const useProgramsStore = defineStore('programs', {
           {},
           { withCredentials: true }
         );
-
-        console.log('Like status updated successfully');
         return response;
       } catch (error) {
         console.error('Failed to update like status:', error);
@@ -129,7 +144,7 @@ export const useProgramsStore = defineStore('programs', {
         });
         return response.data.result;
       } catch (error) {
-        console.error('Failed to update like status:', error);
+        console.error('Failed to fetch liked programs:', error);
       }
     },
   },

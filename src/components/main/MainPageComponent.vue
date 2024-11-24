@@ -10,29 +10,61 @@
         />
       </ul>
     </div>
+    <!-- Infinite Scroll -->
+    <InfiniteScroll
+      :callback="fetchMorePrograms"
+      :isLoading="isLoading"
+    />
   </div>
 </template>
 
 <script>
-import { mapStores } from 'pinia';
-import { useProgramsStore } from '@/stores/useProgramsStore.js';
-import CardComponent from './CardComponent.vue';
+import { mapStores } from "pinia";
+import { useProgramsStore } from "@/stores/useProgramsStore.js";
+import CardComponent from "./CardComponent.vue";
+import InfiniteScroll from "@/components/common/InfiniteScroll.vue";
 
 export default {
-  name: 'MainPageComponent',
+  name: "MainPageComponent",
+
+  data() {
+    return {
+      currentPage: 0, 
+      isLoading: false,
+      pageSize: 12,
+    };
+  },
 
   computed: {
     ...mapStores(useProgramsStore),
   },
 
   mounted() {
-    this.programsStore.getPrograms();
+    this.fetchPrograms();
   },
-  data() {
-    return {};
+
+  methods: {
+    async fetchPrograms() {
+      if (this.isLoading) return;
+      this.isLoading = true;
+
+      try {
+        await this.programsStore.getPrograms(this.currentPage, this.pageSize);
+        this.currentPage++;
+      } catch (error) {
+        console.error("Failed to fetch programs:", error);
+      } finally {
+        this.isLoading = false;
+      }
+    },
+
+    async fetchMorePrograms() {
+      console.log("Fetching more programs...");
+      await this.fetchPrograms();
+    },
   },
-  methods: {},
-  components: { CardComponent },
+
+  components: { CardComponent, InfiniteScroll },
 };
 </script>
 

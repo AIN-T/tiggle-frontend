@@ -57,34 +57,33 @@
         </tbody>
       </table>
     </div>
+    <InfiniteScroll
+      :callback="fetchMorePrograms"
+      :isLoading="isLoading"
+    />
   </div>
-  <div id="drawPerformanceNavgation">
-  <div class="paging_comm">
-    <em class="link_page" @click="goToPage(0)">1</em>
-    <a href="javascript:;" class="link_page" @click="goToPage(1)">2</a>
-    <a href="javascript:;" class="link_page" @click="goToPage(2)">3</a>
-    <a href="javascript:;" class="link_page" @click="goToPage(3)">4</a>
-    <a href="javascript:;" class="link_page" @click="goToPage(4)">5</a>
-    <a href="javascript:;" class="link_page" @click="goToPage(5)">6</a>
-    <a href="javascript:;" class="link_page" @click="goToPage(6)">7</a>
-    <a href="javascript:;" class="link_page" @click="goToPage(7)">8</a>
-    <a href="javascript:;" class="link_page" @click="goToPage(8)">9</a>
-    <a href="javascript:;" class="link_page" @click="goToPage(9)">10</a>
-  </div>
-</div>
 </template>
 
 <script>
 import { mapStores } from "pinia";
 import { useProgramsStore } from "@/stores/useProgramsStore.js";
 import { format } from "date-fns";
+import InfiniteScroll from "@/components/common/InfiniteScroll.vue";
 
 export default {
   name: "SearchComponent",
+  components: { InfiniteScroll },
+  data() {
+    return {
+      currentPage: 0,
+      isLoading: false,
+      pageSize: 5,
+    };
+  },
   computed: {
     ...mapStores(useProgramsStore),
     keyword() {
-      return this.$route.query.keyword || "결과 없음"; // 쿼리에서 키워드 가져오기
+      return this.$route.query.keyword || "결과 없음";
     },
   },
   mounted() {
@@ -92,13 +91,26 @@ export default {
   },
   methods: {
     async fetchPrograms() {
-      try {
-        if (this.keyword) {
-          await this.programsStore.searchPrograms(this.keyword);
-        }
-      } catch (error) {
-        console.error("Failed to fetch programs:", error);
-      }
+  if (this.isLoading) return;
+  this.isLoading = true;
+
+  try {
+    if (this.keyword) {
+      await this.programsStore.searchPrograms(
+        this.keyword,
+        this.currentPage,
+        this.pageSize
+      );
+    }
+  } catch (error) {
+    console.error("Failed to fetch programs:", error);
+  } finally {
+    this.isLoading = false;
+  }
+},
+    async fetchMorePrograms() {
+      this.currentPage++;
+      await this.fetchPrograms();
     },
     formatDate(date) {
       return format(new Date(date), "yyyy.MM.dd");

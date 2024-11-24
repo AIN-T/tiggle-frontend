@@ -2,11 +2,13 @@
   <div id="conts" class="clear_g">
     <div class="wrap_main_concert">
       <div class="category-header">
-        <h2 class="tit_main_concert">장르별 공연</h2>
-        <p class="category-description">
-          {{ categoryName }} 카테고리에서 선택된 최고의 공연을 만나보세요.
-        </p>
-      </div>
+  <div class="category-title-container">
+    <h2 class="tit_main_concert">{{ categoryName }}</h2>
+    <p class="category-description">
+      {{ categoryName }} 카테고리에서 선택된 최고의 공연을 만나보세요.
+    </p>
+  </div>
+</div>
 
       <ul class="list_main_concert" id="perf_poster">
         <CardComponent
@@ -16,42 +18,83 @@
         />
       </ul>
     </div>
+    <InfiniteScroll :callback="fetchMorePrograms" :isLoading="isLoading" />
   </div>
 </template>
 
 <script>
-import { mapStores } from 'pinia';
-import { useProgramsStore } from '@/stores/useProgramsStore.js';
-import CardComponent from './CardComponent.vue';
-import { useRoute } from 'vue-router';
+import { mapStores } from "pinia";
+import { useProgramsStore } from "@/stores/useProgramsStore.js";
+import CardComponent from "./CardComponent.vue";
+import InfiniteScroll from "@/components/common/InfiniteScroll.vue";
+import { useRoute } from "vue-router";
 
 export default {
-  name: 'CategoryComponent',
-  components: { CardComponent },
+  name: "CategoryComponent",
+  components: { CardComponent, InfiniteScroll },
+
   data() {
     return {
+      currentPage: 0,
+      isLoading: false,
+      pageSize: 12,
       categoryId: null,
     };
   },
+
   computed: {
     ...mapStores(useProgramsStore),
 
     categoryName() {
-      const categories = { 1: '콘서트', 2: '뮤지컬/연극', 3: '클래식' };
-      return categories[this.categoryId] || '기타';
+      const categories = { 1: "콘서트", 2: "뮤지컬/연극", 3: "클래식" };
+      return categories[this.categoryId] || "기타";
     },
   },
+
   async mounted() {
     const route = useRoute();
     this.categoryId = parseInt(route.params.categoryId);
 
     if (this.categoryId) {
-      try {
-        await this.programsStore.getCategoryPrograms(this.categoryId);
-      } catch (error) {
-        console.error('Error loading category programs:', error);
+      if (!this.programsStore.programs.length) {
+        this.currentPage = 0;
+        this.programsStore.programs = [];
+        this.isLoading = false;
+        await this.fetchPrograms();
       }
+    } else {
+      console.error("Invalid category ID:", this.categoryId);
     }
+  },
+
+  methods: {
+    async fetchPrograms() {
+      if (this.isLoading) return;
+
+      this.isLoading = true;
+
+      try {
+        const result = await this.programsStore.getCategoryPrograms(
+          this.categoryId,
+          this.currentPage,
+          this.pageSize
+        );
+
+        if (result.length < this.pageSize) {
+          this.isLoading = true;
+        } else {
+          this.currentPage++;
+        }
+      } catch (error) {
+        console.error("Error fetching category programs:", error);
+      } finally {
+        this.isLoading = false;
+      }
+    },
+
+    async fetchMorePrograms() {
+      await this.fetchPrograms();
+    },
   },
 };
 </script>
@@ -492,7 +535,27 @@ a {
 }
 .category-header {
   text-align: center;
-  margin-bottom: 20px;
+  margin: 20px auto;
+  padding: 40px 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+}
+
+.tit_main_concert {
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #333;
+}
+
+.category-description {
+  font-size: 1.2rem;
+  font-weight: 300;
+  color: #555;
+  margin-top: 10px;
+  line-height: 1.6;
 }
 .category-description {
   font-size: 16px;
